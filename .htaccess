@@ -1,0 +1,10 @@
+# Ativar reescrita de URL
+RewriteEngine On
+
+# Condição para reescrever - ignora arquivos, diretórios e links simbólicos existentes
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-l
+
+# Roteamento: redireciona todas as solicitações para o index.php
+RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]

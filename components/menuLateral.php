@@ -10,6 +10,84 @@
 
     <!-- ======= Styles ====== -->
     <link rel="stylesheet" href="public/assets/css/style_menuLateral.css">
+
+    <style>
+        .dropbtn {
+            cursor: pointer;
+            display: block;
+        }
+
+        .nome-icone {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding-right: 10px;
+            /* Espaçamento entre o título e a seta */
+        }
+
+        .nome-icone .title {
+            margin-right: 10px;
+            /* Espaço entre o texto e a seta */
+        }
+
+        .nome-icone i {
+            transition: transform 0.3s ease;
+            /* Suaviza a rotação */
+        }
+
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+        }
+
+        /* Estilização do conteúdo do dropdown com transição */
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+            transition-delay: 0.25s;
+        }
+
+        .dropdown-content.show {
+            max-height: 500px;
+            /* ajuste conforme necessário */
+            opacity: 1;
+            transition-delay: 0s;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        /* CSS para manter os outros itens no lugar enquanto o dropdown se expande */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .details-btn {
+            background-color: #2790b0;
+            border: none;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -35,22 +113,53 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="#">
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">
                         <span class="icon">
-                            <ion-icon name="people-outline"></ion-icon>
+                            <i class="fas fa-tags"></i>
                         </span>
-                        <span class="title">Produtos</span>
+                        <div class="nome-icone">
+                            <span class="title">Categorias</span>
+                            <i class="fas fa-chevron-down"></i> <!-- Ícone da seta -->
+                        </div>
                     </a>
+                    <div class="dropdown-content">
+                        <a href="#">Cadastrar Categoria</a>
+                        <a href="#">Ver Categorias</a>
+                    </div>
                 </li>
 
-                <li>
-                    <a href="#">
+
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">
                         <span class="icon">
-                            <ion-icon name="chatbubble-outline"></ion-icon>
+                            <i class="fas fa-box-open"></i>
                         </span>
-                        <span class="title">Clientes</span>
+                        <div class="nome-icone">
+                            <span class="title">Produtos</span>
+                            <i class="fas fa-chevron-down"></i> <!-- Ícone da seta -->
+                        </div>
                     </a>
+                    <div class="dropdown-content">
+                        <a href="#">Cadastrar Produto</a>
+                        <a href="#">Ver Produtos</a>
+                    </div>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">
+                        <span class="icon">
+                            <i class="fas fa-users"></i>
+                        </span>
+                        <div class="nome-icone">
+                            <span class="title">Clientes</span>
+                            <i class="fas fa-chevron-down"></i> <!-- Ícone da seta -->
+                        </div>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="#">Cadastrar Cliente</a>
+                        <a href="#">Ver Clientes</a>
+                    </div>
                 </li>
 
                 <li>
@@ -71,13 +180,20 @@
                     </a>
                 </li>
 
-                <li>
-                    <a href="#">
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">
                         <span class="icon">
-                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            <i class="fas fa-id-card"></i>
                         </span>
-                        <span class="title">Usuarios</span>
+                        <div class="nome-icone">
+                            <span class="title">Usuarios</span>
+                            <i class="fas fa-chevron-down"></i> <!-- Ícone da seta -->
+                        </div>
                     </a>
+                    <div class="dropdown-content">
+                        <a href="#">Cadastrar Usuario</a>
+                        <a href="#">Ver Usuarios</a>
+                    </div>
                 </li>
 
                 <li>
@@ -123,7 +239,7 @@
                     </div>
 
                     <div class="iconBx">
-                    <i class="fas fa-users"></i>
+                        <i class="fas fa-users"></i>
                     </div>
                 </div>
 
@@ -134,7 +250,7 @@
                     </div>
 
                     <div class="iconBx">
-                    <i class="fas fa-tags"></i>
+                        <i class="fas fa-tags"></i>
                     </div>
                 </div>
 
@@ -145,7 +261,7 @@
                     </div>
 
                     <div class="iconBx">
-                    <i class="fas fa-id-card"></i>
+                        <i class="fas fa-id-card"></i>
                     </div>
                 </div>
             </div>
@@ -173,56 +289,56 @@
                                 <td>Star Refrigerator</td>
                                 <td>R$ 1200</td>
                                 <td>Paid</td>
-                                <td><span class="status delivered">Delivered</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
                                 <td>Dell Laptop</td>
                                 <td>R$ 110</td>
                                 <td>Due</td>
-                                <td><span class="status pending">Pending</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
                                 <td>Apple Watch</td>
                                 <td>R$ 1200</td>
                                 <td>Paid</td>
-                                <td><span class="status return">Return</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
                                 <td>Addidas Shoes</td>
                                 <td>R$ 620</td>
                                 <td>Due</td>
-                                <td><span class="status inProgress">In Progress</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
                                 <td>Star Refrigerator</td>
                                 <td>R$ 1200</td>
                                 <td>Paid</td>
-                                <td><span class="status delivered">Delivered</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
                                 <td>Dell Laptop</td>
                                 <td>R$ 110</td>
                                 <td>Due</td>
-                                <td><span class="status pending">Pending</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
                                 <td>Apple Watch</td>
                                 <td>R$ 1200</td>
                                 <td>Paid</td>
-                                <td><span class="status return">Return</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
                                 <td>Addidas Shoes</td>
                                 <td>R$ 620</td>
                                 <td>Due</td>
-                                <td><span class="status inProgress">In Progress</span></td>
+                                <td><button class="details-btn">Detalhes</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -318,6 +434,44 @@
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(function(dropdown) {
+                var btn = dropdown.querySelector('.dropbtn');
+                btn.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    var dropdownContent = this.nextElementSibling;
+                    var icon = this.querySelector('.nome-icone i'); // Seleciona o ícone de seta dentro de nome-icone
+                    if (dropdownContent.classList.contains('show')) {
+                        dropdownContent.classList.remove('show');
+                        icon.style.transform = 'rotate(0deg)'; // Seta aponta para baixo
+                    } else {
+                        closeAllDropdowns();
+                        dropdownContent.classList.add('show');
+                        icon.style.transform = 'rotate(180deg)'; // Seta aponta para cima
+                    }
+                });
+            });
+
+            function closeAllDropdowns() {
+                document.querySelectorAll('.dropdown-content').forEach(function(element) {
+                    element.classList.remove('show');
+                    var icon = element.previousElementSibling.querySelector('.nome-icone i');
+                    if (icon) {
+                        icon.style.transform = 'rotate(0deg)'; // Reseta a rotação da seta
+                    }
+                });
+            }
+
+            document.addEventListener('click', function(event) {
+                if (!event.target.matches('.dropbtn, .dropbtn *')) { // Inclui todos os filhos de dropbtn no seletor
+                    closeAllDropdowns();
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

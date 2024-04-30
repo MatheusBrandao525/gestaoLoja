@@ -1,5 +1,5 @@
 <div class="centralizar">
-    <form action="/submit-your-form-handler" method="post">
+    <form action="cadastroProduto" method="post">
         <div class="row">
             <div class="column">
                 <label for="nome">Nome:</label>
@@ -8,6 +8,14 @@
             <div class="column">
                 <label for="codigo">Código:</label>
                 <input type="text" id="codigo" name="codigo" required>
+            </div>
+            <div class="column">
+                <label for="exibirPreco">Deseja exibir o preço?</label>
+                <select id="exibirPreco" name="exibirPreco" required>
+                    <option value="">Selecionar...</option>
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                </select>
             </div>
             <div class="column">
                 <label for="precoCusto">Preço de Custo:</label>
@@ -31,25 +39,51 @@
                 <label for="destaque">É Destaque?</label>
                 <select id="destaque" name="destaque" required>
                     <option value="">Selecionar...</option>
-                    <option value="sim">Sim</option>
-                    <option value="nao">Não</option>
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
                 </select>
             </div>
             <div class="column">
                 <label for="tamanhos">Tamanhos:</label>
                 <input type="text" id="tamanhos" name="tamanhos" required>
             </div>
+            <div class="column">
+                <label for="categoriaid">Categoria</label>
+                <select id="categoriaid" name="categoriaid" required>
+                    <option value="">Selecionar...</option>
+                    <option value="1">teste1</option>
+                    <option value="2">teste2</option>
+                </select>
+            </div>
         </div>
         <div class="full-width">
             <label for="descricao">Descrição:</label>
             <textarea id="descricao" name="descricao" rows="4" required></textarea>
         </div>
-        <div class="full-width">
-            <label for="imagem">Imagem:</label>
-            <input type="file" id="imagem" name="imagem" required>
+        <div class="row">
+            <div class="column">
+                <div class="">
+                    <label for="imagem1">Imagem:</label>
+                    <input type="file" id="imagem1" name="imagem1" required>
+                </div>
+            </div>
+            <div class="column">
+                <div class="">
+                    <label for="imagem2">Imagem:</label>
+                    <input type="file" id="imagem2" name="imagem2">
+                </div>
+            </div>
+            <div class="column">
+                <div class="">
+                    <label for="imagem3">Imagem:</label>
+                    <input type="file" id="imagem3" name="imagem3">
+                </div>
+            </div>
         </div>
         <div class="full-width container-botao-cadastro">
             <button type="submit">Cadastrar</button>
         </div>
+
     </form>
+
 </div>

@@ -10,6 +10,7 @@
 
     <!-- ======= Styles ====== -->
     <link rel="stylesheet" href="public/assets/css/style_menuLateral.css">
+    <link rel="stylesheet" href="public/assets/css/style_cadastroProdutosForm.css">
 
     <style>
         .dropbtn {
@@ -137,14 +138,15 @@
                         </span>
                         <div class="nome-icone">
                             <span class="title">Produtos</span>
-                            <i class="fas fa-chevron-down"></i> <!-- Ícone da seta -->
+                            <i class="fas fa-chevron-down"></i>
                         </div>
                     </a>
                     <div class="dropdown-content">
-                        <a href="#">Cadastrar Produto</a>
-                        <a href="#">Ver Produtos</a>
+                        <a href="#" onclick="loadContent('cadastroProdutosForm')">Cadastrar Produto</a>
+                        <a href="#" onclick="loadContent('ver-produtos')">Ver Produtos</a>
                     </div>
                 </li>
+
 
                 <li class="dropdown">
                     <a href="#" class="dropbtn">
@@ -206,18 +208,18 @@
                 </li>
             </ul>
         </div>
+        <div class="topbar">
+            <div class="toggle">
 
+            </div>
+
+            <div class="user">
+                <img src="public/assets/img/placeholder.jpg" alt="">
+            </div>
+        </div>
         <!-- ========================= Main ==================== -->
         <div class="main">
-            <div class="topbar">
-                <div class="toggle">
 
-                </div>
-
-                <div class="user">
-                    <img src="public/assets/img/placeholder.jpg" alt="">
-                </div>
-            </div>
 
             <!-- ======================= Cards ================== -->
             <div class="cardBox">
@@ -471,6 +473,19 @@
                 }
             });
         });
+    </script>
+
+    <script>
+        function loadContent(option) {
+            const mainDiv = document.querySelector('.main');
+
+            fetch(`components/${option}.php`)
+                .then(response => response.text())
+                .then(html => {
+                    mainDiv.innerHTML = html;
+                })
+                .catch(error => console.error('Error loading the page: ', error));
+        }
     </script>
 </body>
 

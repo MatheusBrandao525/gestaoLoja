@@ -288,58 +288,58 @@
 
                         <tbody>
                             <tr>
-                                <td>Star Refrigerator</td>
-                                <td>R$ 1200</td>
-                                <td>Paid</td>
+                                <td>Produto de teste 01</td>
+                                <td>R$ 1.200,00</td>
+                                <td>teste01</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
-                                <td>Dell Laptop</td>
-                                <td>R$ 110</td>
-                                <td>Due</td>
+                                <td>Produto de teste 02</td>
+                                <td>R$ 110,00</td>
+                                <td>teste02</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
-                                <td>Apple Watch</td>
-                                <td>R$ 1200</td>
-                                <td>Paid</td>
+                                <td>Produto de teste 03</td>
+                                <td>R$ 1.200,00</td>
+                                <td>teste01</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
-                                <td>Addidas Shoes</td>
-                                <td>R$ 620</td>
-                                <td>Due</td>
+                                <td>Produto de teste 04</td>
+                                <td>R$ 620,00</td>
+                                <td>teste02</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
-                                <td>Star Refrigerator</td>
-                                <td>R$ 1200</td>
-                                <td>Paid</td>
+                                <td>Produto de teste 05</td>
+                                <td>R$ 1.200,00</td>
+                                <td>teste01</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
-                                <td>Dell Laptop</td>
-                                <td>R$ 110</td>
-                                <td>Due</td>
+                                <td>Produto de teste 06</td>
+                                <td>R$ 110,00</td>
+                                <td>teste02</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
-                                <td>Apple Watch</td>
-                                <td>R$ 1200</td>
-                                <td>Paid</td>
+                                <td>Produto de teste 07</td>
+                                <td>R$ 1.200,00</td>
+                                <td>teste01</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
 
                             <tr>
-                                <td>Addidas Shoes</td>
-                                <td>R$ 620</td>
-                                <td>Due</td>
+                                <td>Produto de teste 08</td>
+                                <td>R$ 620,00</td>
+                                <td>teste02</td>
                                 <td><button class="details-btn">Detalhes</button></td>
                             </tr>
                         </tbody>

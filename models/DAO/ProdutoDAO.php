@@ -1,14 +1,17 @@
 <?php
 
-class ProdutoDao {
+class ProdutoDao
+{
     private $conexao;
 
-    public function __construct($conexao){
+    public function __construct($conexao)
+    {
         $this->conexao = $conexao;
     }
 
     public function cadastro(Produto $produto)
     {
+        $resposta = '';
         $query = "INSERT INTO produtos (nome, codigo, exibe_preco, preco_custo, preco_unitario, modelos, cor, destaque, tamanhos, descricao, imagem1, imagem2, imagem3, categoria_id) VALUES (:nome, :codigo, :exibePreco, :precoCusto, :precoUnitario, :modelos, :cor, :destaque, :tamanhos, :descricao, :imagem1, :imagem2, :imagem3, :categoriaId)";
 
         $nome = $produto->getNome();
@@ -25,8 +28,7 @@ class ProdutoDao {
         $imagem2 = $produto->getImagem2();
         $imagem3 = $produto->getImagem3();
         $categoriaId = $produto->getCategoriaId();
-        try 
-        {
+        try {
             $stmt = $this->conexao->prepare($query);
             $stmt->bindParam(':nome', $nome);
             $stmt->bindParam(':codigo', $codigo);
@@ -44,11 +46,9 @@ class ProdutoDao {
             $stmt->bindParam(':categoriaId', $categoriaId);
 
             $stmt->execute();
-            echo "Produto cadastrado com sucesso!";
-        }
-        catch (Exception $e)
-        {
-            echo "Erro ao cadastrar o produto. $e";
+            echo json_encode(['message' => 'Produto cadastrado com sucesso!']);
+        } catch (Exception $e) {
+            echo json_encode(['message' => "Erro ao cadastrar o produto. '$e'"]);
         }
     }
 }

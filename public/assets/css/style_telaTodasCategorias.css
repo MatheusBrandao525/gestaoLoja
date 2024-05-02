@@ -1,0 +1,63 @@
+.categorias-container {
+    display: flex;
+    width: 100% !important;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.categoria-item {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+}
+
+.categoria-imagem {
+    height: 150px;
+    width: 150px;
+}
+
+.categoria-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.categoria-info {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.categoria-nome {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.categoria-opcoes { 
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.btn-editar,
+.btn-excluir,
+.btn-ver-produtos {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    height: 40px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 3px;
+}
+
+.btn-editar:hover,
+.btn-excluir:hover,
+.btn-ver-produtos:hover {
+    background-color: #0056b3;
+}

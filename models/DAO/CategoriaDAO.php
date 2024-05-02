@@ -29,4 +29,21 @@ class CategoriaDAO
             echo json_encode(['message' => "Erro ao cadastrar categoria. '$e'"]);
         }
     }
+
+    public function buscarTodasCategoriasDatabase()
+    {
+        $query = "SELECT * FROM categorias";
+        
+        try
+        {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }catch (Exception $e)
+        {
+            return ['error' => "Erro ao buscar categorias: " . $e->getMessage()];
+        }
+
+    }
 }

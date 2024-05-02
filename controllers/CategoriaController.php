@@ -11,6 +11,11 @@ class CategoriaController
         include ROOT_PATH . '/views/cadastroCategoria.php';
     }
 
+    public function telaCategorias()
+    {
+        include ROOT_PATH . '/views/categorias.php';
+    }
+
     public function cadastrarCategoria()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -36,5 +41,12 @@ class CategoriaController
         $categoria = new Categoria($nomeCategoria, $nomeImagemCategoria);
         $categoriaDAO = new CategoriaDAO($conexao);
         $categoriaDAO->cadastro($categoria);
+    }
+
+    public function exibirTodasAsCategorias()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $categoriaDAO = new CategoriaDAO($conexao);
+        return $categoriaDAO->buscarTodasCategoriasDatabase();
     }
 }

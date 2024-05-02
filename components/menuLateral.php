@@ -106,7 +106,7 @@
                 </li>
 
                 <li>
-                    <a href="#">
+                    <a href="home">
                         <span class="icon">
                             <ion-icon name="home-outline"></ion-icon>
                         </span>
@@ -125,7 +125,7 @@
                         </div>
                     </a>
                     <div class="dropdown-content">
-                        <a href="#">Cadastrar Categoria</a>
+                        <a href="cadastroCategoria">Cadastrar Categoria</a>
                         <a href="#">Ver Categorias</a>
                     </div>
                 </li>

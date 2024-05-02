@@ -1,12 +1,12 @@
 <?php
 
-class Utilidades {
+class Utilidades
+{
 
-    public function validarCampoVazio($campo)
+    public function validarCampoVazio($campo, $nomeCampo)
     {
-        if($campo === '')
-        {
-            return 'Você deve preencher todos os campos!';
+        if ($campo === '') {
+            throw new Exception("O campo {$nomeCampo} deve ser preenchido!");
         }
     }
 }

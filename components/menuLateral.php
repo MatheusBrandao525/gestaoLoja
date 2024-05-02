@@ -11,6 +11,7 @@
     <!-- ======= Styles ====== -->
     <link rel="stylesheet" href="public/assets/css/style_menuLateral.css">
     <link rel="stylesheet" href="public/assets/css/style_cadastroProdutosForm.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaTodasCategorias.css">
 
     <style>
         .dropbtn {
@@ -126,7 +127,7 @@
                     </a>
                     <div class="dropdown-content">
                         <a href="cadastroCategoria">Cadastrar Categoria</a>
-                        <a href="#">Ver Categorias</a>
+                        <a href="categorias">Ver Categorias</a>
                     </div>
                 </li>
 

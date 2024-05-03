@@ -226,6 +226,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="public/assets/js/menuLateral.js"></script>
     <script src="public/assets/js/cadastroProdutoForm.js"></script>
+    <script src="public/assets/js/excluirCategoria.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

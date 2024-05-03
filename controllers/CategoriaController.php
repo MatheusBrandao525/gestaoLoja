@@ -32,10 +32,10 @@ class CategoriaController
             echo json_encode(['message' => "Erro ao carregar a imagem. Error Code:"]);
         }
 
-        
+
         $validarSeCamposEstaoVazios = new utilidades();
         $validarSeCamposEstaoVazios->validarCampoVazio($nomeCategoria, "Nome");
-        
+
         $conexao = Conexao::getInstance()->getConexao();
 
         $categoria = new Categoria($nomeCategoria, $nomeImagemCategoria);
@@ -48,5 +48,23 @@ class CategoriaController
         $conexao = Conexao::getInstance()->getConexao();
         $categoriaDAO = new CategoriaDAO($conexao);
         return $categoriaDAO->buscarTodasCategoriasDatabase();
+    }
+
+    public function excluirCategoria()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = json_decode(file_get_contents('php://input'), true);
+            $categoriaId = $data['categoriaId'] ?? null;
+            $imagemCategoria = $data['imagemCategoria'] ?? null;
+            $categoriaDAO = new CategoriaDAO($conexao);
+            if ($categoriaId && $imagemCategoria) {
+                $resultado = $categoriaDAO->excluirCategoriaDatabase($categoriaId, $imagemCategoria);
+                echo json_encode($resultado);
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Dados insuficientes fornecidos.']);
+            }
+            exit;
+        }
     }
 }

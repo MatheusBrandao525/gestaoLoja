@@ -26,8 +26,6 @@ class ProdutoController
 
     public function cadastrarProduto()
     {
-
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
             $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING);
@@ -39,25 +37,10 @@ class ProdutoController
             $destaque = filter_input(INPUT_POST, 'destaque', FILTER_SANITIZE_STRING);
             $tamanhos = filter_input(INPUT_POST, 'tamanhos', FILTER_SANITIZE_STRING);
             $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_STRING);
-
-
-            if (isset($_FILES['imagem1']) && !empty($_FILES['imagem1'])) {
-                $imagem1 = $_FILES['imagem1']['tmp_name'];
-                $nomeImagem1 = $_FILES['imagem1']['name'];
-                $diretorioDestino = "public/assets/img/produtos/";
-                $caminhoCompleto = $diretorioDestino . $nomeImagem1;
-                move_uploaded_file($imagem1, $caminhoCompleto);
-            } else {
-                echo json_encode(['message' => "Erro ao carregar a imagem. Error Code:"]);
-            }
-
-            $imagem2 = filter_input(INPUT_POST, 'imagem2', FILTER_SANITIZE_STRING);
-            $imagem3 = filter_input(INPUT_POST, 'imagem3', FILTER_SANITIZE_STRING);
             $categoriaId = filter_input(INPUT_POST, 'categoriaid', FILTER_SANITIZE_STRING);
-
-            $conexao = Conexao::getInstance()->getConexao();
-
-            $validarSeCamposEstaoVazios = new utilidades();
+    
+            $validarSeCamposEstaoVazios = new Utilidades();
+    
             $validarSeCamposEstaoVazios->validarCampoVazio($nome, "Nome");
             $validarSeCamposEstaoVazios->validarCampoVazio($codigo, "Código");
             $validarSeCamposEstaoVazios->validarCampoVazio($exibePreco, "Exibir Preço");
@@ -68,13 +51,27 @@ class ProdutoController
             $validarSeCamposEstaoVazios->validarCampoVazio($destaque, "Destaque");
             $validarSeCamposEstaoVazios->validarCampoVazio($tamanhos, "Tamanhos");
             $validarSeCamposEstaoVazios->validarCampoVazio($descricao, "Descrição");
-            $validarSeCamposEstaoVazios->validarCampoVazio($imagem1, "Imagem 1");
             $validarSeCamposEstaoVazios->validarCampoVazio($categoriaId, "Categoria ID");
-
-            $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $imagem1, $imagem2, $imagem3, $categoriaId);
-
+    
+            if (isset($_FILES['imagem1']) && $_FILES['imagem1']['error'] === UPLOAD_ERR_OK) {
+                $imagem1 = $_FILES['imagem1']['tmp_name'];
+                $nomeImagem1 = $_FILES['imagem1']['name'];
+                $diretorioDestino = "public/assets/img/produtos/";
+                $caminhoCompleto = $diretorioDestino . $nomeImagem1;
+                move_uploaded_file($imagem1, $caminhoCompleto);
+            } else {
+                throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem1']['error']);
+            }
+    
+            $conexao = Conexao::getInstance()->getConexao();
             $produtoDao = new ProdutoDao($conexao);
+    
+            $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $nomeImagem1, $imagem2, $imagem3, $categoriaId);
             $produtoDao->cadastro($produto);
+    
+        } else {
+            throw new Exception("Invalid request method.");
         }
     }
+    
 }

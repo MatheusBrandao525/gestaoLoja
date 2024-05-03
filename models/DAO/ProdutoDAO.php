@@ -9,6 +9,21 @@ class ProdutoDao
         $this->conexao = $conexao;
     }
 
+    public function buscarTodosOsProdutosDatabase()
+    {
+        $query = "SELECT * FROM produtos";
+
+        try
+        {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e){
+            return ['error' => "Erro ao buscar produtos: " . $e->getMessage()];
+        }
+    }
+
     public function cadastro(Produto $produto)
     {
         $resposta = '';

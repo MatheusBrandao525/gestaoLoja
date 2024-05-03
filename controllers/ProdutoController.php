@@ -12,6 +12,18 @@ class ProdutoController
         include ROOT_PATH . '/views/cadastroProduto.php';
     }
 
+    public function telaTodosOsProdutos()
+    {
+        include ROOT_PATH . '/views/produtos.php';
+    }
+
+    public function exibirTodosOsProdutos()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $produtosDAO = new ProdutoDao($conexao);
+        return $produtosDAO->buscarTodosOsProdutosDatabase();
+    }
+
     public function cadastrarProduto()
     {
 

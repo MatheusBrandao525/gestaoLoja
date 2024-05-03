@@ -9,6 +9,7 @@ $routes = [
     '/gestaoLoja/cadastroProduto' => 'ProdutoController@mostrarTelaCadastroProduto',
     '/gestaoLoja/cadastrarProdutoDatabase' => 'ProdutoController@cadastrarProduto',
     '/gestaoLoja/cadastroCategoria' => 'CategoriaController@telaCadastrarCategoria',
+    '/gestaoLoja/excluirCategoria' => 'CategoriaController@excluirCategoria',
     '/gestaoLoja/cadastarCategoriaDatabase' => 'CategoriaController@cadastrarCategoria',
     '/gestaoLoja/detalhes' => 'ProdutoController@redirecionaParaTelaDetalhes',
     '/gestaoLoja/conta' => 'PerfilController@apresentarTelaPerfil',

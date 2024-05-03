@@ -20,7 +20,7 @@ $routes = [
     '/gestaoLoja/pesquisa' => 'PesquisaController@redirecionaParaTelaDePesquisa',
     '/gestaoLoja/sucesso' => 'CheckoutController@redirecionaParaTelaDeSucesso',
     '/gestaoLoja/erro_404' => 'ErroController@redirecionarParaTelaDeErro404',
-    '/gestaoLoja/produtos' => 'ProdutoController@apresentarTodosOsProdutos',
+    '/gestaoLoja/produtos' => 'ProdutoController@telaTodosOsProdutos',
     '/gestaoLoja/usuario_nao_encontrado' => 'ErroController@redirecionartelaUsuarioNaoEncontrado'
 ];
 

@@ -144,7 +144,7 @@
                     </a>
                     <div class="dropdown-content">
                         <a href="cadastroProduto">Cadastrar Produto</a>
-                        <a href="#" onclick="loadContent('ver-produtos')">Ver Produtos</a>
+                        <a href="produtos">Ver Produtos</a>
                     </div>
                 </li>
 

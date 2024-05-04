@@ -38,9 +38,9 @@ class ProdutoController
             $tamanhos = filter_input(INPUT_POST, 'tamanhos', FILTER_SANITIZE_STRING);
             $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_STRING);
             $categoriaId = filter_input(INPUT_POST, 'categoriaid', FILTER_SANITIZE_STRING);
-    
+
             $validarSeCamposEstaoVazios = new Utilidades();
-    
+
             $validarSeCamposEstaoVazios->validarCampoVazio($nome, "Nome");
             $validarSeCamposEstaoVazios->validarCampoVazio($codigo, "Código");
             $validarSeCamposEstaoVazios->validarCampoVazio($exibePreco, "Exibir Preço");
@@ -52,7 +52,7 @@ class ProdutoController
             $validarSeCamposEstaoVazios->validarCampoVazio($tamanhos, "Tamanhos");
             $validarSeCamposEstaoVazios->validarCampoVazio($descricao, "Descrição");
             $validarSeCamposEstaoVazios->validarCampoVazio($categoriaId, "Categoria ID");
-    
+
             if (isset($_FILES['imagem1']) && $_FILES['imagem1']['error'] === UPLOAD_ERR_OK) {
                 $imagem1 = $_FILES['imagem1']['tmp_name'];
                 $nomeImagem1 = $_FILES['imagem1']['name'];
@@ -62,16 +62,33 @@ class ProdutoController
             } else {
                 throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem1']['error']);
             }
-    
+
             $conexao = Conexao::getInstance()->getConexao();
             $produtoDao = new ProdutoDao($conexao);
-    
+
             $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $nomeImagem1, $imagem2, $imagem3, $categoriaId);
             $produtoDao->cadastro($produto);
-    
         } else {
             throw new Exception("Invalid request method.");
         }
     }
-    
+
+    public function excluirProduto()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                $produtoId = $data['produtoId'] ?? null;
+                $produtoDAO = new ProdutoDAO($conexao);
+                if (isset($produtoId)) {
+                    $resultado = $produtoDAO->excluirProdutoDatabase($produtoId);
+                    echo json_encode($resultado);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Dados insuficientes fornecidos.']);
+                }
+                exit;
+            }
+        }
+    }
 }

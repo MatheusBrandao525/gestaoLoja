@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="public/assets/css/style_menuLateral.css">
     <link rel="stylesheet" href="public/assets/css/style_cadastroProdutosForm.css">
     <link rel="stylesheet" href="public/assets/css/style_telaTodasCategorias.css">
+    <link rel="stylesheet" href="public/assets/css/style_importarProdutos.css">
 
     <style>
         .dropbtn {
@@ -143,6 +144,7 @@
                         </div>
                     </a>
                     <div class="dropdown-content">
+                        <a href="importarProdutos">Importar Produtos</a>
                         <a href="cadastroProduto">Cadastrar Produto</a>
                         <a href="produtos">Ver Produtos</a>
                     </div>
@@ -228,6 +230,7 @@
     <script src="public/assets/js/cadastroProdutoForm.js"></script>
     <script src="public/assets/js/excluirCategoria.js"></script>
     <script src="public/assets/js/excluirProduto.js"></script>
+    <script src="public/assets/js/importarProdutos.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

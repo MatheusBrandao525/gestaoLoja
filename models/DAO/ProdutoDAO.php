@@ -13,20 +13,18 @@ class ProdutoDao
     {
         $query = "SELECT * FROM produtos";
 
-        try
-        {
+        try {
             $stmt = $this->conexao->prepare($query);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        } catch (Exception $e){
+        } catch (Exception $e) {
             return ['error' => "Erro ao buscar produtos: " . $e->getMessage()];
         }
     }
 
     public function cadastro(Produto $produto)
     {
-        $resposta = '';
         $query = "INSERT INTO produtos (nome, codigo, exibe_preco, preco_custo, preco_unitario, modelos, cor, destaque, tamanhos, descricao, imagem1, imagem2, imagem3, categoria_id) VALUES (:nome, :codigo, :exibePreco, :precoCusto, :precoUnitario, :modelos, :cor, :destaque, :tamanhos, :descricao, :imagem1, :imagem2, :imagem3, :categoriaId)";
 
         $nome = $produto->getNome();
@@ -64,6 +62,27 @@ class ProdutoDao
             echo json_encode(['message' => 'Produto cadastrado com sucesso!']);
         } catch (Exception $e) {
             echo json_encode(['message' => "Erro ao cadastrar o produto. '$e'"]);
+        }
+    }
+
+    public function excluirProdutoDatabase($produtoId)
+    {
+        $this->conexao->beginTransaction();
+        try {
+            $stmt = $this->conexao->prepare("DELETE FROM produtos WHERE produto_id = :produtoId");
+            $stmt->bindParam(':produtoId', $produtoId);
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $this->conexao->commit();
+                return ['success' => true, 'message' => "Produto excluido com sucesso!"];
+            } else {
+                $this->conexao->rollBack();
+                return ['success' => false, 'error' => "Erro ao tentar excluir produto do banco de dados."];
+            }
+        } catch (Exception $e) {
+            $this->conexao->rollBack();
+            return ['success' => false, 'error' => "Erro ao tentar excluir produto: " . $e->getMessage()];
         }
     }
 }

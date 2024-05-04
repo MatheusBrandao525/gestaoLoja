@@ -7,6 +7,12 @@ require_once 'models/DAO/ProdutoDao.php';
 
 class ProdutoController
 {
+
+    public function telaImportarJsonProdutos()
+    {
+        include ROOT_PATH . '/views/importarJsonProdutos.php';
+    }
+
     public function mostrarTelaCadastroProduto()
     {
         include ROOT_PATH . '/views/cadastroProduto.php';

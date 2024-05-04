@@ -6,6 +6,7 @@ $routes = [
     '/gestaoLoja/home' => 'HomeController@apresentarTelaDeHome',
     '/gestaoLoja/validarLogin' => 'LoginController@autenticarUsuario',
     '/gestaoLoja/sair' => 'LoginController@deslogarUsuario',
+    '/gestaoLoja/importarProdutos' => 'ProdutoController@telaImportarJsonProdutos',
     '/gestaoLoja/cadastroProduto' => 'ProdutoController@mostrarTelaCadastroProduto',
     '/gestaoLoja/cadastrarProdutoDatabase' => 'ProdutoController@cadastrarProduto',
     '/gestaoLoja/cadastroCategoria' => 'CategoriaController@telaCadastrarCategoria',

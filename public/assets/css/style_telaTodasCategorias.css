@@ -48,7 +48,8 @@
 
 .btn-editar,
 .btn-excluir,
-.btn-ver-produtos {
+.btn-ver-produtos,
+.btn-excluir-produto {
   background-color: #007bff;
   border: none;
   color: #fff;
@@ -62,6 +63,7 @@
 
 .btn-editar:hover,
 .btn-excluir:hover,
-.btn-ver-produtos:hover {
+.btn-ver-produtos,
+.btn-excluir-produto:hover {
   background-color: #0056b3;
 }

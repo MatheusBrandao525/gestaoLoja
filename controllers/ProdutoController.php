@@ -69,10 +69,30 @@ class ProdutoController
                 throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem1']['error']);
             }
 
+            if (isset($_FILES['imagem2']) && $_FILES['imagem2']['error'] === UPLOAD_ERR_OK) {
+                $imagem2 = $_FILES['imagem2']['tmp_name'];
+                $nomeImagem2 = $_FILES['imagem2']['name'];
+                $diretorioDestino = "public/assets/img/produtos/";
+                $caminhoCompleto = $diretorioDestino . $nomeImagem2;
+                move_uploaded_file($imagem2, $caminhoCompleto);
+            } else {
+                throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem2']['error']);
+            }
+
+            if (isset($_FILES['imagem3']) && $_FILES['imagem3']['error'] === UPLOAD_ERR_OK) {
+                $imagem3 = $_FILES['imagem3']['tmp_name'];
+                $nomeImagem3 = $_FILES['imagem3']['name'];
+                $diretorioDestino = "public/assets/img/produtos/";
+                $caminhoCompleto = $diretorioDestino . $nomeImagem3;
+                move_uploaded_file($imagem3, $caminhoCompleto);
+            } else {
+                throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem2']['error']);
+            }
+
             $conexao = Conexao::getInstance()->getConexao();
             $produtoDao = new ProdutoDao($conexao);
 
-            $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $nomeImagem1, $imagem2, $imagem3, $categoriaId);
+            $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $nomeImagem1, $nomeImagem2, $nomeImagem3, $categoriaId);
             $produtoDao->cadastro($produto);
         } else {
             throw new Exception("Invalid request method.");

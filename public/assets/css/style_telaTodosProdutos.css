@@ -1,0 +1,74 @@
+.produtos-container {
+  display: flex;
+  width: 100% !important;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.produto-item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+}
+
+.produto-imagem {
+  height: 150px;
+  width: 150px;
+}
+
+.produto-imagem img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.produto-info {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.produto-nome {
+  padding-left: 1.4rem;
+  font-size: 18px;
+  width: 70%;
+  font-weight: bold;
+}
+
+.produto-opcoes {
+  display: flex;
+  width: 30%;
+  justify-content: space-evenly;
+}
+
+.produto-opcoes form {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+.produto-opcoes .btn-excluir-produto,
+.produto-opcoes form .btn-editar-produto {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  height: 40px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+
+.btn-editar:hover,
+.btn-excluir:hover,
+.produto-opcoes form .btn-editar-produto:hover,
+.produto-opcoes .btn-excluir-produto:hover {
+  background-color: #0056b3;
+}

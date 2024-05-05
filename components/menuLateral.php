@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="public/assets/css/style_menuLateral.css">
     <link rel="stylesheet" href="public/assets/css/style_cadastroProdutosForm.css">
     <link rel="stylesheet" href="public/assets/css/style_telaTodasCategorias.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaTodosProdutos.css">
     <link rel="stylesheet" href="public/assets/css/style_importarProdutos.css">
 
     <style>

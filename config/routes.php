@@ -11,6 +11,7 @@ $routes = [
     '/gestaoLoja/cadastrarProdutoDatabase' => 'ProdutoController@cadastrarProduto',
     '/gestaoLoja/cadastroCategoria' => 'CategoriaController@telaCadastrarCategoria',
     '/gestaoLoja/excluirCategoria' => 'CategoriaController@excluirCategoria',
+    '/gestaoLoja/editarProduto' => 'ProdutoController@telaEditarProduto',
     '/gestaoLoja/excluirProduto' => 'ProdutoController@excluirProduto',
     '/gestaoLoja/cadastarCategoriaDatabase' => 'CategoriaController@cadastrarCategoria',
     '/gestaoLoja/detalhes' => 'ProdutoController@redirecionaParaTelaDetalhes',

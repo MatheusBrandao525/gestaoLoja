@@ -23,6 +23,11 @@ class ProdutoController
         include ROOT_PATH . '/views/produtos.php';
     }
 
+    public function telaEditarProduto()
+    {
+        include ROOT_PATH . '/views/editarProduto.php';
+    }
+
     public function exibirTodosOsProdutos()
     {
         $conexao = Conexao::getInstance()->getConexao();

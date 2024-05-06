@@ -4,6 +4,7 @@ require_once "core/Conexao.php";
 require_once 'utils/Utilidades.php';
 require_once 'models/entities/Produto.php';
 require_once 'models/DAO/ProdutoDao.php';
+require_once 'controllers/CategoriaController.php';
 
 class ProdutoController
 {
@@ -103,6 +104,28 @@ class ProdutoController
             throw new Exception("Invalid request method.");
         }
     }
+
+    public function mostraDadosProduto()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $produtoDAO = new ProdutoDAO($conexao);
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
+            $dadosProduto = $produtoDAO->buscarDadosProdutoPorId($produtoId);
+            $categoriaController = new CategoriaController();
+            if (!isset($dadosProduto['error'])) {
+                $dadosProduto['status_destaque'] = $dadosProduto['destaque'] ? 'Sim' : 'Não';
+                $dadosProduto['status_exibe_preco'] = $dadosProduto['exibe_preco'] ? 'Sim' : 'Não';
+                $dadosProduto['nome_categoria'] = $categoriaController->mostarNomeCategoria($dadosProduto['categoria_id']);
+            }
+
+            return $dadosProduto;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Houve um erro ao tentar buscar os dados do produto.']);
+        }
+    }
+
 
     public function excluirProduto()
     {

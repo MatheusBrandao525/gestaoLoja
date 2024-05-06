@@ -50,6 +50,30 @@ class CategoriaController
         return $categoriaDAO->buscarTodasCategoriasDatabase();
     }
 
+    public function mostraDadosCategoria()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $categoriaId = filter_input(INPUT_POST, "categoria_id", FILTER_SANITIZE_NUMBER_INT);
+            $categoriaDAO = new CategoriaDAO($conexao);
+
+            $dadosCategoria = $categoriaDAO->buscarDadosCategoriaPorId($categoriaId);
+
+            return $dadosCategoria;
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Houve um erro ao tentar buscar os dados da categoria.']);
+        }
+    }
+
+    public function mostarNomeCategoria($categoriaId)
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $categoriaDAO = new CategoriaDAO($conexao);
+        $resultado = $categoriaDAO->buscarNomeCategoriaPorId($categoriaId);
+        return $resultado['nome_categoria'] ?? "Categoria não encontrada";
+    }
+
     public function excluirCategoria()
     {
         $conexao = Conexao::getInstance()->getConexao();

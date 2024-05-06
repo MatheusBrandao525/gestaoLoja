@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="public/assets/css/style_telaTodasCategorias.css">
     <link rel="stylesheet" href="public/assets/css/style_telaTodosProdutos.css">
     <link rel="stylesheet" href="public/assets/css/style_importarProdutos.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaEditarProduto.css">
 
     <style>
         .dropbtn {

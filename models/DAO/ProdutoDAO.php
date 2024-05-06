@@ -23,6 +23,20 @@ class ProdutoDao
         }
     }
 
+    public function buscarDadosProdutoPorId($produtoId)
+    {
+        $query = "SELECT * FROM produtos WHERE produto_id = :produtoId";
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam("produtoId", $produtoId);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return ['error' => "Erro ao buscar dados do produto: " . $e->getMessage()];
+        }
+    }
+
     public function cadastro(Produto $produto)
     {
         $query = "INSERT INTO produtos (nome, codigo, exibe_preco, preco_custo, preco_unitario, modelos, cor, destaque, tamanhos, descricao, imagem1, imagem2, imagem3, categoria_id) VALUES (:nome, :codigo, :exibePreco, :precoCusto, :precoUnitario, :modelos, :cor, :destaque, :tamanhos, :descricao, :imagem1, :imagem2, :imagem3, :categoriaId)";

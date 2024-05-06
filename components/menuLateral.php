@@ -164,8 +164,8 @@
                         </div>
                     </a>
                     <div class="dropdown-content">
-                        <a href="#">Cadastrar Cliente</a>
-                        <a href="#">Ver Clientes</a>
+                        <a href="cadastroCliente">Cadastrar Cliente</a>
+                        <a href="verClientes">Ver Clientes</a>
                     </div>
                 </li>
 
@@ -198,8 +198,8 @@
                         </div>
                     </a>
                     <div class="dropdown-content">
-                        <a href="#">Cadastrar Usuario</a>
-                        <a href="#">Ver Usuarios</a>
+                        <a href="cadastroUsuarios">Cadastrar Usuario</a>
+                        <a href="verUsuarios">Ver Usuarios</a>
                     </div>
                 </li>
 

@@ -17,16 +17,14 @@ $routes = [
     '/gestaoLoja/excluirImagemProduto' => 'ProdutoController@excluirImagemProduto',
     '/gestaoLoja/cadastarCategoriaDatabase' => 'CategoriaController@cadastrarCategoria',
     '/gestaoLoja/detalhes' => 'ProdutoController@redirecionaParaTelaDetalhes',
-    '/gestaoLoja/conta' => 'PerfilController@apresentarTelaPerfil',
-    '/gestaoLoja/carrinho' => 'CarrinhoController@apresentarTelaDeCarrinho',
-    '/gestaoLoja/checkout' => 'CheckoutController@apresentarTelaCheckout',
     '/gestaoLoja/categorias' => 'CategoriaController@telaCategorias',
     '/gestaoLoja/detalhesPedido' => 'PerfilController@redirecionaParaDetalhesPedido',
-    '/gestaoLoja/pesquisa' => 'PesquisaController@redirecionaParaTelaDePesquisa',
-    '/gestaoLoja/sucesso' => 'CheckoutController@redirecionaParaTelaDeSucesso',
     '/gestaoLoja/erro_404' => 'ErroController@redirecionarParaTelaDeErro404',
     '/gestaoLoja/produtos' => 'ProdutoController@telaTodosOsProdutos',
-    '/gestaoLoja/usuario_nao_encontrado' => 'ErroController@redirecionartelaUsuarioNaoEncontrado'
+    '/gestaoLoja/cadastroUsuarios' => 'UsuarioController@telaCadastrarUsuarios',
+    '/gestaoLoja/verUsuarios' => 'UsuarioController@exibirTodosOsUsuarios',
+    '/gestaoLoja/cadastroCliente' => 'ClienteController@telaCadastroCliente',
+    '/gestaoLoja/verClientes' => 'ClienteController@telaTodosOsClientes',
 ];
 
 if (isset($_GET['url'])) {

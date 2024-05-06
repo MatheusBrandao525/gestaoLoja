@@ -99,4 +99,99 @@ class ProdutoDao
             return ['success' => false, 'error' => "Erro ao tentar excluir produto: " . $e->getMessage()];
         }
     }
+
+
+    public function atualizarProdutoDatabase($produtoId, Produto $produto)
+    {
+        try {
+            $sql = "UPDATE produtos SET 
+                    nome = :nome, 
+                    codigo = :codigo, 
+                    exibe_preco = :exibePreco, 
+                    preco_custo = :precoCusto, 
+                    preco_unitario = :precoUnitario, 
+                    modelos = :modelos, 
+                    cor = :cor, 
+                    destaque = :destaque, 
+                    tamanhos = :tamanhos, 
+                    descricao = :descricao, 
+                    imagem1 = :imagem1, 
+                    imagem2 = :imagem2, 
+                    imagem3 = :imagem3, 
+                    categoria_id = :categoriaId 
+                    WHERE produto_id = :produtoId";
+    
+            $nome = $produto->getNome();
+            $codigo = $produto->getCodigo();
+            $exibePreco = $produto->getExibePreco();
+            $precoCusto = $produto->getPrecoCusto();
+            $precoUnitario = $produto->getPrecoUnitario();
+            $modelos = $produto->getModelos();
+            $cor = $produto->getCor();
+            $destaque = $produto->getDestaque();
+            $tamanhos = $produto->getTamanhos();
+            $descricao = $produto->getDescricao();
+            $imagem1 = $produto->getImagem();
+            $imagem2 = $produto->getImagem2();
+            $imagem3 = $produto->getImagem3();
+            $categoriaId = $produto->getCategoriaId();
+
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindValue(':nome', $nome);
+            $stmt->bindValue(':codigo', $codigo);
+            $stmt->bindValue(':exibePreco', $exibePreco);
+            $stmt->bindValue(':precoCusto', $precoCusto);
+            $stmt->bindValue(':precoUnitario', $precoUnitario);
+            $stmt->bindValue(':modelos', $modelos);
+            $stmt->bindValue(':cor', $cor);
+            $stmt->bindValue(':destaque', $destaque);
+            $stmt->bindValue(':tamanhos', $tamanhos);
+            $stmt->bindValue(':descricao', $descricao);
+            $stmt->bindValue(':imagem1', $imagem1);
+            $stmt->bindValue(':imagem2', $imagem2);
+            $stmt->bindValue(':imagem3', $imagem3);
+            $stmt->bindValue(':categoriaId', $categoriaId);
+            $stmt->bindValue(':produtoId', $produtoId);
+            $stmt->execute();
+    
+                return ['success' => true, 'message' => 'Produto alterado com sucesso!'];
+        } catch (PDOException $e) {
+            return ['error' => 'Erro ao atualizar o produto: ' . $e->getMessage()];
+        }
+    }
+    
+    public function excluirImagemProdutoDatabase($produtoId, $imagem)
+    {
+        try {
+            $this->conexao->beginTransaction();
+    
+            $sqlSelect = "SELECT {$imagem} FROM produtos WHERE produto_id = :produtoId";
+            $stmtSelect = $this->conexao->prepare($sqlSelect);
+            $stmtSelect->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
+            $stmtSelect->execute();
+            $nomeArquivoImagem = $stmtSelect->fetchColumn();
+    
+            $sqlUpdate = "UPDATE produtos SET {$imagem} = NULL WHERE produto_id = :produtoId";
+            $stmtUpdate = $this->conexao->prepare($sqlUpdate);
+            $stmtUpdate->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
+            $stmtUpdate->execute();
+
+            if ($nomeArquivoImagem) {
+                $caminhoImagem = "public/assets/img/produtos/{$nomeArquivoImagem}";
+                if (file_exists($caminhoImagem)) {
+                    unlink($caminhoImagem);
+                }
+            }
+    
+            $this->conexao->commit();
+    
+            return true;
+        } catch (Exception $e) {
+            $this->conexao->rollBack();
+            error_log("Erro ao excluir imagem do produto: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    
 }

@@ -17,3 +17,20 @@
   text-decoration: none;
   margin-right: 2rem;
 }
+
+.container-imagem-atual-produto{
+  display: flex;
+  align-items: center;
+}
+
+.icone-apagar-imagem-produto{
+  background-color: brown;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  color: #fff;
+  margin-left: 1rem;
+  width: 40px;
+  height: 40px;
+}

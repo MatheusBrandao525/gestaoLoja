@@ -42,6 +42,36 @@ class CategoriaDAO
         }
     }
 
+    public function buscarDadosCategoriaPorId($categoriaId)
+    {
+        $query = "SELECT * FROM categorias WHERE categoria_id = :categoriaId";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(":categoriaId", $categoriaId);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return ['error' => "Erro ao buscar dados da categoria: " . $e->getMessage()];
+        }
+    }
+
+    public function buscarNomeCategoriaPorId($categoriaId)
+    {
+        $query = "SELECT nome_categoria FROM categorias WHERE categoria_id = :categoriaId";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(":categoriaId", $categoriaId);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return ['error' => "Erro ao buscar nome da categoria: " . $e->getMessage()];
+        }
+    }
+
     public function excluirCategoriaDatabase($categoriaId, $imagemCategoria)
     {
         $this->conexao->beginTransaction();

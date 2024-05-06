@@ -148,7 +148,111 @@ class ProdutoController
 
     public function alterarDadosProduto()
     {
+        $conexao = Conexao::getInstance()->getConexao();
+        $produtoDAO = new ProdutoDAO($conexao);
+        header('Content-Type: application/json');
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
+                $produtoAtual = $produtoDAO->buscarDadosProdutoPorId($produtoId);
+    
+                $nome = filter_input(INPUT_POST, 'altera-nome', FILTER_SANITIZE_STRING);
+                $codigo = filter_input(INPUT_POST, 'altera-codigo', FILTER_SANITIZE_STRING);
+                $exibePreco = filter_input(INPUT_POST, 'altera-exibirPreco', FILTER_SANITIZE_STRING);
+                $precoCusto = filter_input(INPUT_POST, 'altera-precoCusto', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $precoUnitario = filter_input(INPUT_POST, 'altera-precoUnitario', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+                $modelos = filter_input(INPUT_POST, 'altera-modelos', FILTER_SANITIZE_STRING);
+                $cor = filter_input(INPUT_POST, 'altera-cor', FILTER_SANITIZE_STRING);
+                $destaque = filter_input(INPUT_POST, 'altera-destaque', FILTER_SANITIZE_STRING);
+                $tamanhos = filter_input(INPUT_POST, 'altera-tamanhos', FILTER_SANITIZE_STRING);
+                $descricao = filter_input(INPUT_POST, 'altera-descricao', FILTER_SANITIZE_STRING);
+                $categoriaId = filter_input(INPUT_POST, 'altera-categoriaid', FILTER_SANITIZE_NUMBER_INT);
+    
+                $dadosParaAtualizar = [];
+                foreach (['nome', 'codigo', 'exibe_preco', 'preco_custo', 'preco_unitario', 'modelos', 'cor', 'destaque', 'tamanhos', 'descricao', 'categoria_id'] as $campo) {
+                    if (isset($$campo) && $$campo != $produtoAtual[$campo]) {
+                        $dadosParaAtualizar[$campo] = $$campo;
+                    }
+                }
+    
+                $imagens = ['altera-imagem1', 'altera-imagem2', 'altera-imagem3'];
+                foreach ($imagens as $key => $imagem) {
+                    if (isset($_FILES[$imagem]) && $_FILES[$imagem]['error'] === UPLOAD_ERR_OK) {
+                        $nomeCampoImagem = 'imagem' . ($key + 1);
+                        $arquivoAntigo = $produtoAtual[$nomeCampoImagem];
+                        if ($arquivoAntigo) {
+                            @unlink("public/assets/img/produtos/" . $arquivoAntigo);
+                        }
+                        $arquivoTmp = $_FILES[$imagem]['tmp_name'];
+                        $nomeImagem = $_FILES[$imagem]['name'];
+                        $diretorioDestino = "public/assets/img/produtos/";
+                        $caminhoCompleto = $diretorioDestino . $nomeImagem;
+                        move_uploaded_file($arquivoTmp, $caminhoCompleto);
+                        $dadosParaAtualizar[$nomeCampoImagem] = $nomeImagem;
+                    }
+                }
+    
+                if (!empty($dadosParaAtualizar)) {
+                    $produto = new Produto(
+                        $dadosParaAtualizar['nome'] ?? $produtoAtual['nome'],
+                        $dadosParaAtualizar['codigo'] ?? $produtoAtual['codigo'],
+                        $dadosParaAtualizar['exibe_preco'] ?? $produtoAtual['exibe_preco'],
+                        $dadosParaAtualizar['preco_custo'] ?? $produtoAtual['preco_custo'],
+                        $dadosParaAtualizar['preco_unitario'] ?? $produtoAtual['preco_unitario'],
+                        $dadosParaAtualizar['modelos'] ?? $produtoAtual['modelos'],
+                        $dadosParaAtualizar['cor'] ?? $produtoAtual['cor'],
+                        $dadosParaAtualizar['destaque'] ?? $produtoAtual['destaque'],
+                        $dadosParaAtualizar['tamanhos'] ?? $produtoAtual['tamanhos'],
+                        $dadosParaAtualizar['descricao'] ?? $produtoAtual['descricao'],
+                        $dadosParaAtualizar['imagem1'] ?? $produtoAtual['imagem1'],
+                        $dadosParaAtualizar['imagem2'] ?? $produtoAtual['imagem2'],
+                        $dadosParaAtualizar['imagem3'] ?? $produtoAtual['imagem3'],
+                        $dadosParaAtualizar['categoria_id'] ?? $produtoAtual['categoria_id']
+                    );
+                    $resposta = $produtoDAO->atualizarProdutoDatabase($produtoId, $produto);
+                    if (isset($resposta['success'])) {
+                        echo json_encode(['Status' => 'success', 'message' => $resposta['message']]);
+                    } elseif (isset($resposta['error'])) {
+                        echo json_encode(['error' => $resposta['error']]);
+                    } else {
+                        echo json_encode(['error' => "Erro desconhecido."]);
+                    }
+                } else {
+                    echo json_encode(['error' => "Nenhuma alteração foi feita."]);
+                }
+            } catch (Exception $e) {
+                http_response_code(500);
+                echo json_encode(['error' => $e->getMessage()]);
+            }
+        } else {
+            http_response_code(405); // Method Not Allowed
+            echo json_encode(['error' => "Invalid request method."]);
         }
     }
+
+    
+        public function excluirImagemProduto()
+        {
+            $conexao = Conexao::getInstance()->getConexao();
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
+                $imagem = filter_input(INPUT_POST, 'imagem', FILTER_SANITIZE_STRING);
+            
+                $conexao = Conexao::getInstance()->getConexao();
+                $produtoDAO = new ProdutoDAO($conexao);
+                
+                $resultado = $produtoDAO->excluirImagemProdutoDatabase($produtoId, $imagem);
+            
+                header('Content-Type: application/json');
+                if ($resultado) {
+                    echo json_encode(['success' => true, 'message' => 'Imagem excluída com sucesso.']);
+                } else {
+                    echo json_encode(['error' => 'Falha ao excluir a imagem.']);
+                }
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Método de requisição não permitido.']);
+            }
+
+        }
 }

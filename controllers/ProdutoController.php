@@ -29,6 +29,11 @@ class ProdutoController
         include ROOT_PATH . '/views/editarProduto.php';
     }
 
+    public function telaProdutosPorCategoria()
+    {
+        include ROOT_PATH . '/views/produtosPorCategoria.php';
+    }
+
     public function exibirTodosOsProdutos()
     {
         $conexao = Conexao::getInstance()->getConexao();
@@ -255,4 +260,19 @@ class ProdutoController
             }
 
         }
+        
+        public function buscarProdutosPorCategoria()
+        {
+            $conexao = Conexao::getInstance()->getConexao();
+            $produtos = null; // Inicializar com null
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $categoriaId = filter_input(INPUT_POST, 'categoriaId', FILTER_SANITIZE_NUMBER_INT);
+                $produtoDAO = new ProdutoDAO($conexao);
+                $produtos = $produtoDAO->buscarProdutosPorCategoriaDatabase($categoriaId);
+            } else {
+                $produtos = ['error' => 'Método de requisição não permitido.'];
+            }
+            return $produtos; // Retornar produtos ou erro
+        }
+        
 }

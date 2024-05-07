@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="public/assets/css/style_importarProdutos.css">
     <link rel="stylesheet" href="public/assets/css/style_telaEditarProduto.css">
     <link rel="stylesheet" href="public/assets/css/style_telaEditarCategoria.css">
+    <link rel="stylesheet" href="public/assets/css/style_cadastroUsuario.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaTodosUsuarios.css">
 
     <style>
         .dropbtn {
@@ -236,6 +238,7 @@
     <script src="public/assets/js/importarProdutos.js"></script>
     <script src="public/assets/js/editarProduto.js"></script>
     <script src="public/assets/js/editarCategoria.js"></script>
+    <script src="public/assets/js/cadastroUsuario.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

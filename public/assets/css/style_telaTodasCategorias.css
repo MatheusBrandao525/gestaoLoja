@@ -46,7 +46,14 @@
   justify-content: space-evenly;
 }
 
-.btn-editar,
+.categoria-opcoes form{
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+.categoria-opcoes form .btn-editar,
 .btn-excluir,
 .btn-ver-produtos,
 .btn-excluir-produto {
@@ -61,9 +68,10 @@
   border-radius: 3px;
 }
 
-.btn-editar:hover,
+.categoria-opcoes form .btn-editar:hover,
 .btn-excluir:hover,
-.btn-ver-produtos,
+.btn-ver-produtos:hover,
 .btn-excluir-produto:hover {
   background-color: #0056b3;
 }
+ 

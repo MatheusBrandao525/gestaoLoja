@@ -1,0 +1,10 @@
+.preview-imagem-atual-categoria{
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-imagem-atual-categoria img{
+    width: 150px;
+    margin-top: 20px;
+    margin-left: 1rem;
+}

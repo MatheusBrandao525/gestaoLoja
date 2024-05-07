@@ -100,4 +100,41 @@ class CategoriaDAO
             return ['success' => false, 'error' => "Erro ao tentar excluir categoria: " . $e->getMessage()];
         }
     }
+
+    public function atualizarCategoriaDatabase($categoriaId, Categoria $categoria)
+    {
+        try {
+            // Prepara a SQL para atualizar a categoria
+            $sql = "UPDATE categorias SET 
+                    nome_categoria = :nomeCategoria, 
+                    imagem_categria = :imagemCategoria
+                    WHERE categoria_id = :categoriaId";
+    
+            // Obtém os valores da entidade Categoria
+            $nomeCategoria = $categoria->getNome();
+            $imagemCategoria = $categoria->getImagem();
+    
+            // Prepara o statement
+            $stmt = $this->conexao->prepare($sql);
+    
+            // Vincula os parâmetros ao statement
+            $stmt->bindValue(':nomeCategoria', $nomeCategoria);
+            $stmt->bindValue(':imagemCategoria', $imagemCategoria);
+            $stmt->bindValue(':categoriaId', $categoriaId);
+    
+            // Executa o statement
+            $stmt->execute();
+    
+            // Retorna sucesso se a atualização ocorrer corretamente
+            if ($stmt->rowCount() > 0) {
+                return ['success' => true, 'message' => 'Categoria atualizada com sucesso!'];
+            } else {
+                return ['error' => 'Nenhuma alteração realizada.'];
+            }
+        } catch (PDOException $e) {
+            // Retorna erro se houver uma exceção durante a execução
+            return ['error' => 'Erro ao atualizar a categoria: ' . $e->getMessage()];
+        }
+    }
+    
 }

@@ -19,7 +19,10 @@ require_once 'components/menuLateral.php';
                                 <button type="submit" class="btn-editar">Editar</button>
                             </form>
                             <button class="btn-excluir" data-categoria-id="<?php echo $categoria['categoria_id']; ?>" data-imagem-categoria="<?php echo $categoria['imagem_categria']; ?>">Excluir</button>
-                            <button class="btn-ver-produtos">Ver Produtos</button>
+                            <form action="verProdutosCategoria" method="post">
+                                <input type="hidden" name="categoriaId" value="<?php echo $categoria['categoria_id'];?>">
+                                <button type="submit" class="btn-ver-produtos">Ver Produtos</button>
+                            </form>
                         </div>
                     </div>
                 </div>

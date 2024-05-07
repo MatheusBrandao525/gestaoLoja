@@ -1,0 +1,75 @@
+.usuarios-container {
+    display: flex;
+    width: 100% !important;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .usuario-item {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+  }
+  
+  .usuario-imagem {
+    height: 150px;
+    width: 150px;
+  }
+  
+  .usuario-imagem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .usuario-info {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+  }
+  
+  .usuario-nome {
+    padding-left: 1.4rem;
+    font-size: 18px;
+    width: 70%;
+    font-weight: bold;
+  }
+  
+  .usuario-opcoes {
+    display: flex;
+    width: 30%;
+    justify-content: space-evenly;
+  }
+  
+  .usuario-opcoes form {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+  }
+  
+  .usuario-opcoes form .btn-editar,
+  .btn-excluir,
+  .btn-ver-detalhes {
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    height: 40px;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 3px;
+  }
+  
+  .usuario-opcoes form .btn-editar:hover,
+  .btn-excluir:hover,
+  .btn-ver-detalhes:hover {
+    background-color: #0056b3;
+  }
+  

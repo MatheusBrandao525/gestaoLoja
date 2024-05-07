@@ -1,0 +1,46 @@
+.alinhamento-horizontal{
+    display:flex;
+}
+
+.upload-container {
+    cursor: pointer;
+    width: 115px;
+    height: 115px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.upload-box {
+    pointer-events: none;
+}
+
+.upload-box i {
+    font-size: 24px;
+    color: #888;
+}
+
+.upload-box p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #888;
+}
+
+.image-preview-container {
+    margin-left: 10px;
+    width: 115px;
+    height: 115px;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#imagePreview {
+    width: 100%;
+    height: auto;
+}

@@ -193,5 +193,19 @@ class ProdutoDao
         }
     }
     
+    public function buscarProdutosPorCategoriaDatabase($categoriaId)
+    {
+        $query = "SELECT * FROM produtos WHERE categoria_id = :categoriaId";
+
+        try{
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(":categoriaId", $categoriaId);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }catch(Exception $e){
+            return ['error' => "Erro ao buscar produtos por categoria: " . $e->getMessage()];
+        }
+    }
     
 }

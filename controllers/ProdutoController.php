@@ -70,40 +70,35 @@ class ProdutoController
             $validarSeCamposEstaoVazios->validarCampoVazio($descricao, "Descrição");
             $validarSeCamposEstaoVazios->validarCampoVazio($categoriaId, "Categoria ID");
 
+            $diretorioDestino = "public/assets/img/produtos/";
+            $imagensNomes = [null, null, null]; // Array para armazenar os nomes das imagens
+
+            // Processamento da primeira imagem
             if (isset($_FILES['imagem1']) && $_FILES['imagem1']['error'] === UPLOAD_ERR_OK) {
-                $imagem1 = $_FILES['imagem1']['tmp_name'];
-                $nomeImagem1 = $_FILES['imagem1']['name'];
-                $diretorioDestino = "public/assets/img/produtos/";
-                $caminhoCompleto = $diretorioDestino . $nomeImagem1;
-                move_uploaded_file($imagem1, $caminhoCompleto);
-            } else {
-                throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem1']['error']);
+                $imagensNomes[0] = $this->processarImagem($_FILES['imagem1'], $diretorioDestino);
+            } elseif ($_FILES['imagem1']['error'] !== UPLOAD_ERR_NO_FILE) {
+                throw new Exception("Erro ao carregar a imagem imagem1: " . $_FILES['imagem1']['error']);
             }
-
+    
+            // Processamento da segunda imagem
             if (isset($_FILES['imagem2']) && $_FILES['imagem2']['error'] === UPLOAD_ERR_OK) {
-                $imagem2 = $_FILES['imagem2']['tmp_name'];
-                $nomeImagem2 = $_FILES['imagem2']['name'];
-                $diretorioDestino = "public/assets/img/produtos/";
-                $caminhoCompleto = $diretorioDestino . $nomeImagem2;
-                move_uploaded_file($imagem2, $caminhoCompleto);
-            } else {
-                throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem2']['error']);
+                $imagensNomes[1] = $this->processarImagem($_FILES['imagem2'], $diretorioDestino);
+            } elseif ($_FILES['imagem2']['error'] !== UPLOAD_ERR_NO_FILE) {
+                throw new Exception("Erro ao carregar a imagem imagem2: " . $_FILES['imagem2']['error']);
             }
-
+    
+            // Processamento da terceira imagem
             if (isset($_FILES['imagem3']) && $_FILES['imagem3']['error'] === UPLOAD_ERR_OK) {
-                $imagem3 = $_FILES['imagem3']['tmp_name'];
-                $nomeImagem3 = $_FILES['imagem3']['name'];
-                $diretorioDestino = "public/assets/img/produtos/";
-                $caminhoCompleto = $diretorioDestino . $nomeImagem3;
-                move_uploaded_file($imagem3, $caminhoCompleto);
-            } else {
-                throw new Exception("Erro ao carregar a imagem: " . $_FILES['imagem2']['error']);
+                $imagensNomes[2] = $this->processarImagem($_FILES['imagem3'], $diretorioDestino);
+            } elseif ($_FILES['imagem3']['error'] !== UPLOAD_ERR_NO_FILE) {
+                throw new Exception("Erro ao carregar a imagem imagem3: " . $_FILES['imagem3']['error']);
             }
+    
 
             $conexao = Conexao::getInstance()->getConexao();
             $produtoDao = new ProdutoDao($conexao);
 
-            $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $nomeImagem1, $nomeImagem2, $nomeImagem3, $categoriaId);
+            $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $imagensNomes[0] ?? null, $imagensNomes[1] ?? null, $imagensNomes[2] ?? null, $categoriaId);
             $produtoDao->cadastro($produto);
         } else {
             throw new Exception("Invalid request method.");
@@ -161,6 +156,7 @@ class ProdutoController
                 $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
                 $produtoAtual = $produtoDAO->buscarDadosProdutoPorId($produtoId);
     
+                // Carrega os campos do formulário
                 $nome = filter_input(INPUT_POST, 'altera-nome', FILTER_SANITIZE_STRING);
                 $codigo = filter_input(INPUT_POST, 'altera-codigo', FILTER_SANITIZE_STRING);
                 $exibePreco = filter_input(INPUT_POST, 'altera-exibirPreco', FILTER_SANITIZE_STRING);
@@ -188,14 +184,12 @@ class ProdutoController
                         if ($arquivoAntigo) {
                             @unlink("public/assets/img/produtos/" . $arquivoAntigo);
                         }
-                        $arquivoTmp = $_FILES[$imagem]['tmp_name'];
-                        $nomeImagem = $_FILES[$imagem]['name'];
                         $diretorioDestino = "public/assets/img/produtos/";
-                        $caminhoCompleto = $diretorioDestino . $nomeImagem;
-                        move_uploaded_file($arquivoTmp, $caminhoCompleto);
+                        $nomeImagem = $this->processarImagem($_FILES[$imagem], $diretorioDestino);
                         $dadosParaAtualizar[$nomeCampoImagem] = $nomeImagem;
                     }
                 }
+    
     
                 if (!empty($dadosParaAtualizar)) {
                     $produto = new Produto(
@@ -274,5 +268,17 @@ class ProdutoController
             }
             return $produtos; // Retornar produtos ou erro
         }
-        
+    
+        private function processarImagem($file, $diretorioDestino)
+        {
+            $imagemTemp = $file['tmp_name'];
+            $extensao = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $nomeImagem = md5(uniqid(rand(), true)) . '.' . $extensao;
+            $caminhoCompleto = $diretorioDestino . $nomeImagem;
+            if (move_uploaded_file($imagemTemp, $caminhoCompleto)) {
+                return $nomeImagem;
+            } else {
+                throw new Exception("Falha ao mover a imagem para o diretório de destino.");
+            }
+        }
 }

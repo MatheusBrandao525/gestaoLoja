@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="public/assets/css/style_telaEditarCategoria.css">
     <link rel="stylesheet" href="public/assets/css/style_cadastroUsuario.css">
     <link rel="stylesheet" href="public/assets/css/style_telaTodosUsuarios.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaEditarUsuario.css">
 
     <style>
         .dropbtn {
@@ -240,6 +241,7 @@
     <script src="public/assets/js/editarCategoria.js"></script>
     <script src="public/assets/js/cadastroUsuario.js"></script>
     <script src="public/assets/js/excluirUsuario.js"></script>
+    <script src="public/assets/js/editarUsuario.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

@@ -13,6 +13,7 @@ $routes = [
     '/gestaoLoja/excluirCategoria' => 'CategoriaController@excluirCategoria',
     '/gestaoLoja/excluirUsuario' => 'UsuarioController@excluirUsuario',
     '/gestaoLoja/editarUsuario' => 'UsuarioController@telaEditarUsuario',
+    '/gestaoLoja/alterarDadosUsuario' => 'UsuarioController@alterarDadosUsuario',
     '/gestaoLoja/editarProduto' => 'ProdutoController@telaEditarProduto',
     '/gestaoLoja/alterarDadosProduto' => 'ProdutoController@alterarDadosProduto',
     '/gestaoLoja/excluirProduto' => 'ProdutoController@excluirProduto',

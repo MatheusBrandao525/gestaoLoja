@@ -6,6 +6,7 @@ $usuarioData = $usuario->dadosUsuarioPorId();
 <div class="main">
     <div class="centralizar">
         <form id="formularioAlterarUsuario" action="" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="usuarioId" value="<?php echo $usuarioData['id'];?>">
             <div class="row">
                 <div class="column">
                     <label for="nome">Nome:</label>

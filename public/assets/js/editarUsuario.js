@@ -34,4 +34,29 @@ document.addEventListener("DOMContentLoaded", function () {
       reader.readAsDataURL(file);
     }
   });
+
+  const form = document.getElementById("formularioAlterarUsuario");
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const url = "alterarDadosUsuario";
+    if (confirm("Tem certeza que deseja alterar estes dados do usuário?")) {
+      fetch(url, {
+        method: "POST",
+        body: formData,
+        headers: {},
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Sucesso:", data);
+          alert("Dados do usuário alterados com sucesso!");
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error("Erro:", error);
+          alert("Erro ao alterar dados do usuário. Tente novamente.");
+        });
+    }
+  });
 });

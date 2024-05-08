@@ -18,9 +18,9 @@ require_once 'components/menuLateral.php';
                                 <input type="hidden" name="usuario_id" value="<?php echo $usuario['id']; ?>">
                                 <button type="submit" class="btn-editar">Editar</button>
                             </form>
-                            <button class="btn-excluir-usuario" data-usuario-id="<?php echo $usuario['id']; ?>">Excluir</button>
+                            <button class="btn-excluir-usuario" data-usuario-id="<?php echo $usuario['id']; ?>" data-foto-usuario="<?php echo $usuario['foto']; ?>">Excluir</button>
                             <form action="verDetalhesUsuario" method="post">
-                                <input type="hidden" name="usuarioId" value="<?php echo $usuario['id'];?>">
+                                <input type="hidden" name="usuarioId" value="<?php echo $usuario['id']; ?>">
                                 <button type="submit" class="btn-ver-detalhes">Ver Detalhes</button>
                             </form>
                         </div>

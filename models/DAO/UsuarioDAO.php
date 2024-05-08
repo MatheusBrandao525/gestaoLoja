@@ -9,7 +9,8 @@ class UsuarioDAO
         $this->conexao = $conexao;
     }
 
-    public function buscarTodosOsUsuariosCadastrados() {
+    public function buscarTodosOsUsuariosCadastrados()
+    {
         $query = "SELECT * FROM usuarios";
         try {
             $stmt = $this->conexao->prepare($query);
@@ -21,12 +22,13 @@ class UsuarioDAO
             return null;
         }
     }
-    
 
-    public function cadastrarUsuarioDatabase(Usuario $usuario) {
+
+    public function cadastrarUsuarioDatabase(Usuario $usuario)
+    {
         header('Content-Type: application/json');
         $query = "INSERT INTO usuarios (nome, email, senha, classe, foto) VALUES (:nome, :email, :senha, :classe, :foto)";
-    
+
         try {
 
             $nome = $usuario->getNome();
@@ -41,14 +43,40 @@ class UsuarioDAO
             $stmt->bindParam(':senha', $senha);
             $stmt->bindParam(':classe', $classe);
             $stmt->bindParam(':foto', $foto);
-    
+
             $stmt->execute();
 
             return ["success" => true, "message" => "Usuário cadastrado com sucesso!"];
-
         } catch (PDOException $e) {
             echo json_encode(["error" => "Erro ao cadastrar o usuário: " . $e->getMessage()]);
         }
     }
-    
+
+    public function excluirUsuarioDatabase($usuarioId, $fotoUsuario)
+    {
+        $this->conexao->beginTransaction();
+        try {
+            $stmt = $this->conexao->prepare("DELETE FROM usuarios WHERE id = :usuarioId");
+            $stmt->bindParam(':usuarioId', $usuarioId);
+            $stmt->execute();
+
+            if ($stmt->rowCount()) {
+                $diretorio_imagem = 'public/assets/img/usuarios/';
+                $excluirImagemUsuario = $fotoUsuario;
+
+                if ($excluirImagemUsuario != "") {
+                    unlink($diretorio_imagem . $excluirImagemUsuario);
+                }
+
+                $this->conexao->commit();
+                return ['success' => true, 'message' => "Usuário e imagem excluídos com sucesso!"];
+            } else {
+                $this->conexao->rollBack();
+                return ['success' => false, 'error' => "Erro ao tentar excluir o usuário do banco de dados."];
+            }
+        } catch (Exception $e) {
+            $this->conexao->rollBack();
+            return ['success' => false, 'error' => "Erro ao tentar excluir usuário: " . $e->getMessage()];
+        }
+    }
 }

@@ -1,0 +1,18 @@
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  border: none;
+  background: none;
+  position: absolute;
+  right: 10px;
+  padding-bottom: 15px;
+  cursor: pointer;
+}
+
+input[type="password"] {
+  padding-right: 30px; /* Espaço para o ícone */
+}

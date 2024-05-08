@@ -23,30 +23,43 @@ class CategoriaController
 
     public function cadastrarCategoria()
     {
+        header('Content-Type: application/json');
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nomeCategoria = filter_input(INPUT_POST, 'nomeCategoria', FILTER_SANITIZE_STRING);
-        }
+    
+            $validarSeCamposEstaoVazios = new utilidades();
+            $validarSeCamposEstaoVazios->validarCampoVazio($nomeCategoria, "Nome");
 
-        if (isset($_FILES['imagemCategoria']) && !empty($_FILES['imagemCategoria'])) {
-            $imagemCategoria = $_FILES['imagemCategoria']['tmp_name'];
-            $nomeImagemCategoria = $_FILES['imagemCategoria']['name'];
-            $diretorioDestino = "public/assets/img/categorias/";
-            $caminhoCompleto = $diretorioDestino . $nomeImagemCategoria;
-            move_uploaded_file($imagemCategoria, $caminhoCompleto);
+    
+            $nomeImagemCategoria = null;
+            if (isset($_FILES['imagemCategoria']) && $_FILES['imagemCategoria']['error'] === UPLOAD_ERR_OK) {
+                $arquivoTmp = $_FILES['imagemCategoria']['tmp_name'];
+                $extensao = pathinfo($_FILES['imagemCategoria']['name'], PATHINFO_EXTENSION);
+                $nomeUnico = md5(uniqid(time())) . '.' . $extensao;
+                $diretorioDestino = "public/assets/img/categorias/";
+                $caminhoCompleto = $diretorioDestino . $nomeUnico;
+                if (move_uploaded_file($arquivoTmp, $caminhoCompleto)) {
+                    $nomeImagemCategoria = $nomeUnico;
+                } else {
+                    echo json_encode(['error' => "Erro ao salvar a imagem no servidor."]);
+                    return;
+                }
+            } else {
+                echo json_encode(['error' => "Erro ao carregar a imagem. Error Code: " . $_FILES['imagemCategoria']['error']]);
+                return;
+            }
+    
+            $conexao = Conexao::getInstance()->getConexao();
+            $categoria = new Categoria($nomeCategoria, $nomeImagemCategoria);
+            $categoriaDAO = new CategoriaDAO($conexao);
+            $cadastrarCategoria = $categoriaDAO->cadastro($categoria);
         } else {
-            echo json_encode(['message' => "Erro ao carregar a imagem. Error Code:"]);
+            http_response_code(405);
+            echo json_encode(['error' => "Invalid request method. Only POST is allowed."]);
         }
-
-
-        $validarSeCamposEstaoVazios = new utilidades();
-        $validarSeCamposEstaoVazios->validarCampoVazio($nomeCategoria, "Nome");
-
-        $conexao = Conexao::getInstance()->getConexao();
-
-        $categoria = new Categoria($nomeCategoria, $nomeImagemCategoria);
-        $categoriaDAO = new CategoriaDAO($conexao);
-        $categoriaDAO->cadastro($categoria);
     }
+    
 
     public function exibirTodasAsCategorias()
     {
@@ -101,38 +114,38 @@ class CategoriaController
         $conexao = Conexao::getInstance()->getConexao();
         $categoriaDAO = new CategoriaDAO($conexao);
         header('Content-Type: application/json');
-
+    
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $categoriaId = filter_input(INPUT_POST, 'categoriaId', FILTER_SANITIZE_NUMBER_INT);
                 $categoriaAtual = $categoriaDAO->buscarDadosCategoriaPorId($categoriaId);
-
+    
                 $nomeCategoria = filter_input(INPUT_POST, 'nomeCategoria', FILTER_SANITIZE_STRING);
                 $dadosParaAtualizar = [];
-
-                // Verifica se o nome foi alterado
-                if ($nomeCategoria && $nomeCategoria !== $categoriaAtual['imagem_categria']) {
+    
+                if ($nomeCategoria && $nomeCategoria !== $categoriaAtual['nome_categoria']) {
                     $dadosParaAtualizar['nome_categoria'] = $nomeCategoria;
                 }
-
-                // Processa a imagem se uma nova foi enviada
+    
                 if (isset($_FILES['imagemCategoria']) && $_FILES['imagemCategoria']['error'] === UPLOAD_ERR_OK) {
-                    $arquivoAntigo = $categoriaAtual['imagem_categria'];
+                    $arquivoAntigo = $categoriaAtual['imagem_categoria'] ?? null;
                     if ($arquivoAntigo) {
                         @unlink("public/assets/img/categorias/" . $arquivoAntigo);
                     }
                     $arquivoTmp = $_FILES['imagemCategoria']['tmp_name'];
-                    $nomeImagem = $_FILES['imagemCategoria']['name'];
+                    $nomeOriginal = pathinfo($_FILES['imagemCategoria']['name'], PATHINFO_FILENAME);
+                    $extensao = pathinfo($_FILES['imagemCategoria']['name'], PATHINFO_EXTENSION);
+                    $nomeUnico = md5(uniqid(time())) . '.' . $extensao;
                     $diretorioDestino = "public/assets/img/categorias/";
-                    $caminhoCompleto = $diretorioDestino . $nomeImagem;
+                    $caminhoCompleto = $diretorioDestino . $nomeUnico;
                     move_uploaded_file($arquivoTmp, $caminhoCompleto);
-                    $dadosParaAtualizar['imagem_categoria'] = $nomeImagem;
+                    $dadosParaAtualizar['imagem_categoria'] = $nomeUnico;
                 }
-
+    
                 if (!empty($dadosParaAtualizar)) {
                     $categoria = new Categoria(
                         $dadosParaAtualizar['nome_categoria'] ?? $categoriaAtual['nome_categoria'],
-                        $dadosParaAtualizar['imagem_categoria'] ?? $categoriaAtual['imagem_categria']
+                        $dadosParaAtualizar['imagem_categoria'] ?? $categoriaAtual['imagem_categoria']
                     );
                     $resposta = $categoriaDAO->atualizarCategoriaDatabase($categoriaId, $categoria);
                     if (isset($resposta['success'])) {
@@ -154,4 +167,5 @@ class CategoriaController
             echo json_encode(['error' => "Invalid request method."]);
         }
     }
+    
 }

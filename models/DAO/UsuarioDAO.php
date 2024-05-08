@@ -79,4 +79,19 @@ class UsuarioDAO
             return ['success' => false, 'error' => "Erro ao tentar excluir usuário: " . $e->getMessage()];
         }
     }
+
+    public function buscarDadosUsuarioPorId($usuarioId)
+    {
+        $query = "SELECT * FROM usuarios WHERE id = :usuarioId";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(":usuarioId", $usuarioId);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return ['error' => "Erro ao buscar dados do usuário: " . $e->getMessage()];
+        }
+    }
 }

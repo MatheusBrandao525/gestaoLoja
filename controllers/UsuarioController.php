@@ -15,6 +15,11 @@ class UsuarioController
         include ROOT_PATH . '/views/todosUsuarios.php';
     }
 
+    public function telaEditarUsuario()
+    {
+        include ROOT_PATH . '/views/editarUsuario.php';
+    }
+
     public function cadastrarUsuario()
     {
         header('Content-Type: application/json');
@@ -92,6 +97,22 @@ class UsuarioController
                 echo json_encode(['success' => false, 'error' => 'Dados insuficientes fornecidos.']);
             }
             exit;
+        } else {
+            echo json_encode(["error" => "Método de requisição não permitido."]);
+        }
+    }
+
+    public function dadosUsuarioPorId()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $usuarioId = filter_input(INPUT_POST, 'usuario_id', FILTER_SANITIZE_NUMBER_INT);
+
+            $usuarioDAO = new UsuarioDAO($conexao);
+
+            $dadosUsuario = $usuarioDAO->buscarDadosUsuarioPorId($usuarioId);
+
+            return $dadosUsuario;
         } else {
             echo json_encode(["error" => "Método de requisição não permitido."]);
         }

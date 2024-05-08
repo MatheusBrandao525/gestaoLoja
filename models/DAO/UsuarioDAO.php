@@ -94,4 +94,28 @@ class UsuarioDAO
             return ['error' => "Erro ao buscar dados do usuário: " . $e->getMessage()];
         }
     }
+
+    public function atualizarDadosUsuarioDatabase($usuarioId, $dados)
+    {
+        try {
+            $sql = "UPDATE usuarios SET nome = :nome, email = :email, senha = :senha, classe = :status, foto = :foto WHERE id = :usuarioId";
+            $stmt = $this->conexao->prepare($sql);
+            $stmt->bindValue(':nome', $dados['nome']);
+            $stmt->bindValue(':email', $dados['email']);
+            $stmt->bindValue(':senha', $dados['senha']);
+            $stmt->bindValue(':status', $dados['status']);
+            $stmt->bindValue(':foto', $dados['foto']);
+            $stmt->bindValue(':usuarioId', $usuarioId);
+            $stmt->execute();
+    
+            if ($stmt->rowCount() > 0) {
+                return ['success' => true, 'message' => 'Dados do usuário atualizados com sucesso!'];
+            } else {
+                return ['error' => 'Nenhuma alteração realizada.'];
+            }
+        } catch (PDOException $e) {
+            return ['error' => 'Erro ao atualizar os dados do usuário: ' . $e->getMessage()];
+        }
+    }
+    
 }

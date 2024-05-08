@@ -117,4 +117,70 @@ class UsuarioController
             echo json_encode(["error" => "Método de requisição não permitido."]);
         }
     }
+
+    public function alterarDadosUsuario() {
+        $conexao = Conexao::getInstance()->getConexao();
+        $usuarioDAO = new UsuarioDAO($conexao);
+        header('Content-Type: application/json');
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $usuarioId = filter_input(INPUT_POST, 'usuarioId', FILTER_SANITIZE_NUMBER_INT);
+                $usuarioAtual = $usuarioDAO->buscarDadosUsuarioPorId($usuarioId);
+    
+                if ($usuarioAtual === false) {
+                    throw new Exception("Falha ao obter dados do usuário.");
+                }
+    
+                $nome = filter_input(INPUT_POST, 'altera-nome', FILTER_SANITIZE_STRING);
+                $email = filter_input(INPUT_POST, 'altera-email', FILTER_SANITIZE_EMAIL);
+                $senha = filter_input(INPUT_POST, 'altera-senha', FILTER_SANITIZE_STRING);
+                $status = filter_input(INPUT_POST, 'altera-status', FILTER_SANITIZE_STRING);
+                $dadosParaAtualizar = [
+                    'nome' => $nome,
+                    'email' => $email,
+                    'senha' => $senha,
+                    'status' => $status,
+                    'foto' => $usuarioAtual['foto']
+                ];
+    
+                if (isset($_FILES['altera-foto']) && $_FILES['altera-foto']['error'] === UPLOAD_ERR_OK) {
+                    $arquivoAntigo = $usuarioAtual['foto'] ?? null;
+                    if ($arquivoAntigo) {
+                        @unlink("public/assets/img/usuarios/" . $arquivoAntigo);
+                    }
+                    $arquivoTmp = $_FILES['altera-foto']['tmp_name'];
+                    $nomeOriginal = pathinfo($_FILES['altera-foto']['name'], PATHINFO_FILENAME);
+                    $extensao = pathinfo($_FILES['altera-foto']['name'], PATHINFO_EXTENSION);
+                    $nomeUnico = md5(uniqid(time())) . '.' . $extensao;
+                    $diretorioDestino = "public/assets/img/usuarios/";
+                    $caminhoCompleto = $diretorioDestino . $nomeUnico;
+                    move_uploaded_file($arquivoTmp, $caminhoCompleto);
+                    $dadosParaAtualizar['foto'] = $nomeUnico;
+                }
+    
+                if (!empty($dadosParaAtualizar)) {
+                    $resposta = $usuarioDAO->atualizarDadosUsuarioDatabase($usuarioId, $dadosParaAtualizar);
+                    if (isset($resposta['success'])) {
+                        echo json_encode(['Status' => 'success', 'message' => $resposta['message']]);
+                    } elseif (isset($resposta['error'])) {
+                        echo json_encode(['error' => $resposta['error']]);
+                    } else {
+                        echo json_encode(['error' => "Erro desconhecido."]);
+                    }
+                } else {
+                    echo json_encode(['error' => "Nenhuma alteração foi feita."]);
+                }
+            } catch (Exception $e) {
+                http_response_code(500);
+                echo json_encode(['error' => $e->getMessage()]);
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(['error' => "Invalid request method."]);
+        }
+    }
+    
+    
+    
 }

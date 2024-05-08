@@ -1,5 +1,6 @@
 <?php
-class Conexao {
+class Conexao
+{
     private static $instance = null;
     private $conn;
     private $servidor = "localhost";
@@ -7,10 +8,11 @@ class Conexao {
     private $senha = "1exagon1@";
     private $dbname = "topmotos";
 
-    private function __construct() {
+    private function __construct()
+    {
         try {
             // Atualize esta linha para usar PDO
-            $dsn = "mysql:host=$this->servidor;dbname=$this->dbname;charset=utf8";
+            $dsn = "mysql:host=$this->servidor;port=3307;dbname=$this->dbname;charset=utf8";
             $this->conn = new PDO($dsn, $this->usuario, $this->senha, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -20,14 +22,16 @@ class Conexao {
         }
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (!self::$instance) {
             self::$instance = new Conexao();
         }
         return self::$instance;
     }
 
-    public function getConexao() {
+    public function getConexao()
+    {
         return $this->conn;
     }
 }

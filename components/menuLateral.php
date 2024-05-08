@@ -239,6 +239,7 @@
     <script src="public/assets/js/editarProduto.js"></script>
     <script src="public/assets/js/editarCategoria.js"></script>
     <script src="public/assets/js/cadastroUsuario.js"></script>
+    <script src="public/assets/js/excluirUsuario.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

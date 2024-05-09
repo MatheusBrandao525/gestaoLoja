@@ -2,7 +2,7 @@
 
 $routes = [
     '/gestaoLoja/' => 'HomeController@apresentarTelaDeHome',
-    '/gestaoLoja/login' => 'LoginController@redirecionaParaTelaDeLogin',
+    '/gestaoLoja/login' => 'LoginController@telaLogin',
     '/gestaoLoja/home' => 'HomeController@apresentarTelaDeHome',
     '/gestaoLoja/validarLogin' => 'LoginController@autenticarUsuario',
     '/gestaoLoja/sair' => 'LoginController@deslogarUsuario',

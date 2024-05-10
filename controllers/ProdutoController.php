@@ -230,55 +230,216 @@ class ProdutoController
     }
 
     
-        public function excluirImagemProduto()
-        {
-            $conexao = Conexao::getInstance()->getConexao();
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
-                $imagem = filter_input(INPUT_POST, 'imagem', FILTER_SANITIZE_STRING);
+    public function excluirImagemProduto()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
+            $imagem = filter_input(INPUT_POST, 'imagem', FILTER_SANITIZE_STRING);
             
-                $conexao = Conexao::getInstance()->getConexao();
-                $produtoDAO = new ProdutoDAO($conexao);
+            $conexao = Conexao::getInstance()->getConexao();
+            $produtoDAO = new ProdutoDAO($conexao);
                 
-                $resultado = $produtoDAO->excluirImagemProdutoDatabase($produtoId, $imagem);
+            $resultado = $produtoDAO->excluirImagemProdutoDatabase($produtoId, $imagem);
             
-                header('Content-Type: application/json');
-                if ($resultado) {
-                    echo json_encode(['success' => true, 'message' => 'Imagem excluída com sucesso.']);
-                } else {
-                    echo json_encode(['error' => 'Falha ao excluir a imagem.']);
-                }
+            header('Content-Type: application/json');
+            if ($resultado) {
+                echo json_encode(['success' => true, 'message' => 'Imagem excluída com sucesso.']);
             } else {
-                http_response_code(405);
-                echo json_encode(['error' => 'Método de requisição não permitido.']);
+                echo json_encode(['error' => 'Falha ao excluir a imagem.']);
             }
+        } else {
+            http_response_code(405);
+            echo json_encode(['error' => 'Método de requisição não permitido.']);
+        }
 
-        }
+    }
         
-        public function buscarProdutosPorCategoria()
-        {
-            $conexao = Conexao::getInstance()->getConexao();
-            $produtos = null; // Inicializar com null
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $categoriaId = filter_input(INPUT_POST, 'categoriaId', FILTER_SANITIZE_NUMBER_INT);
-                $produtoDAO = new ProdutoDAO($conexao);
-                $produtos = $produtoDAO->buscarProdutosPorCategoriaDatabase($categoriaId);
-            } else {
-                $produtos = ['error' => 'Método de requisição não permitido.'];
-            }
-            return $produtos; // Retornar produtos ou erro
+    public function buscarProdutosPorCategoria()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $produtos = null; // Inicializar com null
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $categoriaId = filter_input(INPUT_POST, 'categoriaId', FILTER_SANITIZE_NUMBER_INT);
+            $produtoDAO = new ProdutoDAO($conexao);
+            $produtos = $produtoDAO->buscarProdutosPorCategoriaDatabase($categoriaId);
+        } else {
+            $produtos = ['error' => 'Método de requisição não permitido.'];
         }
+        return $produtos; // Retornar produtos ou erro
+    }
     
-        private function processarImagem($file, $diretorioDestino)
-        {
-            $imagemTemp = $file['tmp_name'];
-            $extensao = pathinfo($file['name'], PATHINFO_EXTENSION);
-            $nomeImagem = md5(uniqid(rand(), true)) . '.' . $extensao;
-            $caminhoCompleto = $diretorioDestino . $nomeImagem;
-            if (move_uploaded_file($imagemTemp, $caminhoCompleto)) {
-                return $nomeImagem;
-            } else {
-                throw new Exception("Falha ao mover a imagem para o diretório de destino.");
+    private function processarImagem($file, $diretorioDestino)
+    {
+        $imagemTemp = $file['tmp_name'];
+        $extensao = pathinfo($file['name'], PATHINFO_EXTENSION);
+        $nomeImagem = md5(uniqid(rand(), true)) . '.' . $extensao;
+        $caminhoCompleto = $diretorioDestino . $nomeImagem;
+        if (move_uploaded_file($imagemTemp, $caminhoCompleto)) {
+            return $nomeImagem;
+        } else {
+            throw new Exception("Falha ao mover a imagem para o diretório de destino.");
+        }
+    }
+
+    public function importarProdutosJson()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $utilidades = new Utilidades();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fileUpload'])) {
+            if ($_FILES['fileUpload']['error'] != UPLOAD_ERR_OK) {
+                die("Erro no upload: " . $_FILES['fileUpload']['error']);
+            }
+    
+            $jsonFile = file_get_contents($_FILES['fileUpload']['tmp_name']);
+            $produtos = json_decode($jsonFile, true);
+    
+            if (!is_array($produtos)) {
+                die("Erro ao decodificar o JSON.");
+            }
+    
+            foreach ($produtos as $produto) {
+                $inicioPromocao = $utilidades->formatarDataParaMySQL($produto['inicio_promocao']);
+                $fimPromocao = $utilidades->formatarDataParaMySQL($produto['fim_promocao']);
+    
+                $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
+                $stmt->execute([$produto['id']]);
+                $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+                if ($produtoExistente) {
+                    $camposParaAtualizar = [];
+                    $valoresParaAtualizar = [];
+    
+                    foreach ($produto as $campo => $valor) {
+                        if ($campo === 'id') {
+                            continue;
+                        }
+                        if ($campo === 'inicio_promocao') {
+                            $valor = $inicioPromocao;
+                        }
+                        if ($campo === 'fim_promocao') {
+                            $valor = $fimPromocao;
+                        }
+                        if ($produtoExistente[$campo] != $valor) {
+                            $camposParaAtualizar[] = "$campo = ?";
+                            $valoresParaAtualizar[] = $valor;
+                        }
+                    }
+    
+                    if (count($camposParaAtualizar) > 0) {
+                        $sqlUpdate = "UPDATE produtos SET " . implode(', ', $camposParaAtualizar) . " WHERE codigo = ?";
+                        $valoresParaAtualizar[] = $produto['id'];
+                        $stmtUpdate = $conexao->prepare($sqlUpdate);
+                        $stmtUpdate->execute($valoresParaAtualizar);
+                    }
+                } else {
+                    $sql = "INSERT INTO produtos (codigo, nome, descricao, unidade, id_grupo, preco_venda_1, preco_venda_2, preco_venda_3, preco_venda_4, preco_venda_5, preco_promocao, inicio_promocao, fim_promocao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $stmt = $conexao->prepare($sql);
+                    $stmt->execute([
+                        $produto['id'],
+                        $produto['nome'],
+                        $produto['descricao'],
+                        $produto['unidade'],
+                        $produto['id_grupo'],
+                        $produto['preco_venda_1'],
+                        $produto['preco_venda_2'],
+                        $produto['preco_venda_3'],
+                        $produto['preco_venda_4'],
+                        $produto['preco_venda_5'],
+                        $produto['preco_promocao'],
+                        $inicioPromocao,
+                        $fimPromocao
+                    ]);
+                }
+            }
+    
+            echo "Produtos importados com sucesso!";
+        }
+    }
+
+    public function processarImagensImportadas()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imageUpload'])) {
+            $fileCount = count($_FILES['imageUpload']['name']);
+    
+            for ($i = 0; $i < $fileCount; $i++) {
+                if ($_FILES['imageUpload']['error'][$i] !== UPLOAD_ERR_OK) {
+                    echo "Erro no upload do arquivo " . $_FILES['imageUpload']['name'][$i] . ": " . $_FILES['imageUpload']['error'][$i];
+                    continue;
+                }
+    
+                $jsonFile = file_get_contents($_FILES['imageUpload']['tmp_name'][$i]);
+                $imagensProdutos = json_decode($jsonFile, true);
+    
+                if (!is_array($imagensProdutos)) {
+                    echo "Erro ao decodificar o JSON.";
+                    exit();
+                }
+
+                echo '<pre>';
+                print_r($imagensProdutos);
+                echo '</pre>';
+    
+                foreach ($imagensProdutos as $imagemProduto) {
+                    $produtoId = $imagemProduto['id_produto'];
+                    $extensao = $imagemProduto['extensao'];
+                    $imagemBase64 = $imagemProduto['foto'];
+    
+                    $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
+                    $stmt->execute([$produtoId]);
+                    $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+                    if ($produtoExistente) {
+                        $imagemBinaria = base64_decode($imagemBase64);
+                        if ($imagemBinaria === false) {
+                            echo "Erro ao decodificar imagem em base64 para o produto ID: $produtoId\n";
+                            continue;
+                        }
+    
+                        $nomeUnicoImagem = md5($imagemBase64 . microtime()) . $extensao;
+    
+                        $caminhoSalvar = "public/assets/img/produtos/$nomeUnicoImagem";
+    
+                        if (!file_put_contents($caminhoSalvar, $imagemBinaria)) {
+                            echo "Erro ao salvar a imagem para o produto ID: $produtoId\n";
+                            continue;
+                        }
+    
+                        $sqlConsulta = "SELECT imagem1, imagem2, imagem3 FROM produtos WHERE codigo = ?";
+                        $stmtConsulta = $conexao->prepare($sqlConsulta);
+                        $stmtConsulta->execute([$produtoId]);
+                        $resultado = $stmtConsulta->fetch();
+    
+                        if ($resultado) {
+                            $campoAtualizar = null;
+                            if (empty($resultado['imagem1'])) {
+                                $campoAtualizar = 'imagem1';
+                            } elseif (empty($resultado['imagem2'])) {
+                                $campoAtualizar = 'imagem2';
+                            } elseif (empty($resultado['imagem3'])) {
+                                $campoAtualizar = 'imagem3';
+                            }
+    
+                            if ($campoAtualizar) {
+                                $sqlUpdate = "UPDATE produtos SET $campoAtualizar = ? WHERE codigo = ?";
+                                $stmtUpdate = $conexao->prepare($sqlUpdate);
+                                $stmtUpdate->execute([$nomeUnicoImagem, $produtoId]);
+                            } else {
+                                echo "Todos os campos de imagem para este produto já estão preenchidos.";
+                            }
+                        } else {
+                            echo "Produto não encontrado.";
+                        }
+                    } else {
+                        echo "Produto ID: $produtoId não encontrado.\n";
+                    }
+                }
             }
         }
+    }
+    
+    
+
+    
 }

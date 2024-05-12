@@ -21,6 +21,11 @@ class CategoriaController
         include ROOT_PATH . '/views/categorias.php';
     }
 
+    public function telaImportarCategorias()
+    {
+        include ROOT_PATH . '/views/importarJsonCategorias.php';
+    }
+
     public function cadastrarCategoria()
     {
         header('Content-Type: application/json');
@@ -167,5 +172,64 @@ class CategoriaController
             echo json_encode(['error' => "Invalid request method."]);
         }
     }
+
+    public function importarCategoriasJson()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $utilidades = new Utilidades();
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['categoriasFileUpload'])) {
+            if ($_FILES['categoriasFileUpload']['error'] != UPLOAD_ERR_OK) {
+                die("Erro no upload: " . $_FILES['categoriasFileUpload']['error']);
+            }
+    
+            $jsonFile = file_get_contents($_FILES['categoriasFileUpload']['tmp_name']);
+            $categorias = json_decode($jsonFile, true);
+    
+            if (!is_array($categorias)) {
+                die("Erro ao decodificar o JSON.");
+            }
+    
+            foreach ($categorias as $categoria) {
+                $stmt = $conexao->prepare("SELECT * FROM categorias WHERE categoria_id = ?");
+                $stmt->execute([$categoria['id']]);
+                $categoriaExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+                if ($categoriaExistente) {
+                    $camposParaAtualizar = [];
+                    $valoresParaAtualizar = [];
+    
+                    foreach ($categoria as $campo => $valor) {
+                        if ($campo === 'id') {
+                            continue;
+                        }
+                        if ($categoriaExistente[$campo] != $valor) {
+                            $camposParaAtualizar[] = "$campo = ?";
+                            $valoresParaAtualizar[] = $valor;
+                        }
+                    }
+    
+                    if (count($camposParaAtualizar) > 0) {
+                        $sqlUpdate = "UPDATE categorias SET " . implode(', ', $camposParaAtualizar) . " WHERE categoria_id = ?";
+                        $valoresParaAtualizar[] = $categoria['id'];
+                        $stmtUpdate = $conexao->prepare($sqlUpdate);
+                        $stmtUpdate->execute($valoresParaAtualizar);
+                    }
+                } else {
+                    $sql = "INSERT INTO categorias (categoria_id, nome_categoria) VALUES (?, ?)";
+                    $stmt = $conexao->prepare($sql);
+                    $stmt->execute([
+                        $categoria['id'],
+                        $categoria['nome']
+                    ]);
+                }
+            }
+    
+            echo "Categorias importadas com sucesso!";
+        } else {
+            echo 'Arquivo não encontrado!';
+        }
+    }
+    
     
 }

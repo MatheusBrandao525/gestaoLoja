@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="public/assets/css/style_cadastroUsuario.css">
     <link rel="stylesheet" href="public/assets/css/style_telaTodosUsuarios.css">
     <link rel="stylesheet" href="public/assets/css/style_telaEditarUsuario.css">
+    <link rel="stylesheet" href="public/assets/css/style_importarCategorias.css">
 
     <style>
         .dropbtn {
@@ -133,6 +134,7 @@
                         </div>
                     </a>
                     <div class="dropdown-content">
+                        <a href="importarCategorias">Importar Categorias</a>
                         <a href="cadastroCategoria">Cadastrar Categoria</a>
                         <a href="categorias">Ver Categorias</a>
                     </div>
@@ -242,6 +244,7 @@
     <script src="public/assets/js/cadastroUsuario.js"></script>
     <script src="public/assets/js/excluirUsuario.js"></script>
     <script src="public/assets/js/editarUsuario.js"></script>
+    <script src="public/assets/js/importarCategorias.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

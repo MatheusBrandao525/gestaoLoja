@@ -439,7 +439,31 @@ class ProdutoController
         }
     }
     
-    
+    public function pesquisaProdutos()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $pesquisa = isset($_POST['pesquisa']) ? $_POST['pesquisa'] : '';
 
+        $sql = "SELECT * FROM produtos WHERE nome LIKE ? OR codigo LIKE ?";
+        $stmt = $conexao->prepare($sql);
+        $stmt->execute(["%$pesquisa%", "%$pesquisa%"]);
+        $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        foreach ($produtos as $produto) {
+            echo '<div class="produto-item">';
+            echo '<div class="produto-imagem">';
+            echo '<img src="public/assets/img/produtos/' . $produto['imagem1'] . '" alt="Imagem do produto">';
+            echo '</div>';
+            echo '<div class="produto-info">';
+            echo '<span class="produto-nome">' . htmlspecialchars($produto['nome']) . '</span>';
+            echo '<div class="produto-opcoes">';
+            echo '<form action="editarProduto" method="post">';
+            echo '<input type="hidden" name="produtoId" value="' . $produto['produto_id'] . '">';
+            echo '<button type="submit" class="btn-editar-produto" data-produto-id="' . $produto['produto_id'] . '">Editar</button>';
+            echo '</form>';
+            echo '<button class="btn-excluir-produto" data-produto-id="' . $produto['produto_id'] . '">Excluir</button>';
+            echo '</div></div></div>';
+        }
+    }
     
 }

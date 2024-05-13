@@ -31,6 +31,7 @@ $routes = [
     '/gestaoLoja/detalhesPedido' => 'PerfilController@redirecionaParaDetalhesPedido',
     '/gestaoLoja/erro_404' => 'ErroController@redirecionarParaTelaDeErro404',
     '/gestaoLoja/produtos' => 'ProdutoController@telaTodosOsProdutos',
+    '/gestaoLoja/processarPesquisaProdutos' => 'ProdutoController@pesquisaProdutos',
     '/gestaoLoja/cadastroUsuarios' => 'UsuarioController@telaCadastrarUsuarios',
     '/gestaoLoja/cadastrarUsuario' => 'UsuarioController@cadastrarUsuario',
     '/gestaoLoja/verUsuarios' => 'UsuarioController@telaTodosOsUsuarios',

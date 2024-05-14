@@ -1,8 +1,9 @@
 <?php
 
 $routes = [
-    '/gestaoLoja/' => 'HomeController@apresentarTelaDeHome',
+    '/gestaoLoja/' => 'LoginController@telaLogin',
     '/gestaoLoja/login' => 'LoginController@telaLogin',
+    '/gestaoLoja/autenticacao' => 'LoginController@autenticarUsuario',
     '/gestaoLoja/home' => 'HomeController@apresentarTelaDeHome',
     '/gestaoLoja/validarLogin' => 'LoginController@autenticarUsuario',
     '/gestaoLoja/sair' => 'LoginController@deslogarUsuario',
@@ -35,6 +36,7 @@ $routes = [
     '/gestaoLoja/cadastroUsuarios' => 'UsuarioController@telaCadastrarUsuarios',
     '/gestaoLoja/cadastrarUsuario' => 'UsuarioController@cadastrarUsuario',
     '/gestaoLoja/verUsuarios' => 'UsuarioController@telaTodosOsUsuarios',
+    '/gestaoLoja/erroLogin' => 'ErroController@telaErroLogin',
     '/gestaoLoja/cadastroCliente' => 'ClienteController@telaCadastroCliente',
     '/gestaoLoja/verClientes' => 'ClienteController@telaTodosOsClientes',
 ];

@@ -20,17 +20,18 @@
                     <div class="row">
                         <div class="column">
                             <label for="email-user">Email:</label>
-                            <input type="email" name="email-user">
+                            <input type="email" id="email-user" name="email">
                         </div>
                         <div class="column">
                             <label for="senha-user">Senha:</label>
-                            <input type="password" name="senha-user">
+                            <input type="password" id="senha-user" name="senha">
                         </div>
                         <div class="submit-container">
                             <button type="submit">Entrar</button>
                         </div>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

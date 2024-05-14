@@ -9,6 +9,27 @@ class UsuarioDAO
         $this->conexao = $conexao;
     }
 
+    public function loginDoUsuario($email, $senha)
+    {
+        $query = "SELECT * FROM usuarios WHERE email = :usuarioEmail AND senha = :usuarioSenha";
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(":usuarioEmail", $email);
+            $stmt->bindParam(":usuarioSenha", $senha);
+            $stmt->execute();
+    
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($usuario) {
+                return $usuario;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+    
+
     public function buscarTodosOsUsuariosCadastrados()
     {
         $query = "SELECT * FROM usuarios";

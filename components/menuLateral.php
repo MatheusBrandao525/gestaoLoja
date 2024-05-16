@@ -1,3 +1,8 @@
+<?php
+require_once 'utils/Utilidades.php';
+$utilidades = new Utilidades();
+$sessaoExiste = $utilidades->verificaSeSessaoExiste();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,6 +25,7 @@
     <link rel="stylesheet" href="public/assets/css/style_telaTodosUsuarios.css">
     <link rel="stylesheet" href="public/assets/css/style_telaEditarUsuario.css">
     <link rel="stylesheet" href="public/assets/css/style_importarCategorias.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaConfiguracoes.css">
 
     <style>
         .dropbtn {
@@ -175,24 +181,6 @@
                     </div>
                 </li>
 
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="help-outline"></ion-icon>
-                        </span>
-                        <span class="title">Ajuda</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <span class="icon">
-                            <ion-icon name="settings-outline"></ion-icon>
-                        </span>
-                        <span class="title">Configurações</span>
-                    </a>
-                </li>
-
                 <li class="dropdown">
                     <a href="#" class="dropbtn">
                         <span class="icon">
@@ -211,6 +199,24 @@
 
                 <li>
                     <a href="#">
+                        <span class="icon">
+                            <ion-icon name="help-outline"></ion-icon>
+                        </span>
+                        <span class="title">Ajuda</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="configuracoes">
+                        <span class="icon">
+                            <ion-icon name="settings-outline"></ion-icon>
+                        </span>
+                        <span class="title">Configurações</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="sair">
                         <span class="icon">
                             <ion-icon name="log-out-outline"></ion-icon>
                         </span>

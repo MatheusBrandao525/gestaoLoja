@@ -14,15 +14,16 @@ class LoginController
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
             $senha = filter_input(INPUT_POST, "senha", FILTER_SANITIZE_STRING);
-    
+
             $usuarioDAO = new UsuarioDAO($conexao);
-    
+
             $usuario = $usuarioDAO->loginDoUsuario($email, $senha);
-    
-            if($usuario){
+            if ($usuario) {
+                session_start();
+                $_SESSION['ID'] = $usuario['id'];
                 header('Location: home');
                 exit();
-            }else{
+            } else {
                 header('Location: erroLogin');
                 exit();
             }
@@ -31,5 +32,16 @@ class LoginController
             echo json_encode(['error' => 'Método de requisição não permitido.']);
         }
     }
-    
+
+    public function sair()
+    {
+        session_start();
+
+        if (isset($_SESSION['ID'])) {
+            unset($_SESSION['ID']);
+        }
+
+        header("Location: /gestaoLoja/login");
+        exit;
+    }
 }

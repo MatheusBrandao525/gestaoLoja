@@ -1,5 +1,15 @@
 <?php
+require_once 'controllers/ProdutoController.php';
+require_once 'controllers/UsuarioController.php';
+require_once 'controllers/CategoriaController.php';
 require 'components/menuLateral.php';
+$usuarioController = new UsuarioController();
+$produtoController = new ProdutoController();
+$categoriaController = new CategoriaController();
+$ultimosProdutosCadastrados = $produtoController->exibirUltimosProdutosCadastrados();
+$quantidadeDeprodutosCadastrados = $produtoController->exibirQuantidadeDeProdutosCadastrados();
+$quantidadeDeUsuariosCadastrados = $usuarioController->exibirQuantidadeDeUsuariosCadastrados();
+$quantidadeDeCategoriasCadastradas = $categoriaController->exibirQuantidadeDeCategoriasCadastradas();
 ?>
 <div class="main">
 
@@ -8,7 +18,7 @@ require 'components/menuLateral.php';
     <div class="cardBox">
         <div class="card">
             <div>
-                <div class="numbers">154</div>
+                <div class="numbers"><?php echo $quantidadeDeprodutosCadastrados; ?></div>
                 <div class="cardName">Produtos Cadastrados</div>
             </div>
 
@@ -19,7 +29,7 @@ require 'components/menuLateral.php';
 
         <div class="card">
             <div>
-                <div class="numbers">80</div>
+                <div class="numbers">0</div>
                 <div class="cardName">Clientes Cadastrados</div>
             </div>
 
@@ -30,7 +40,7 @@ require 'components/menuLateral.php';
 
         <div class="card">
             <div>
-                <div class="numbers">24</div>
+                <div class="numbers"><?php echo $quantidadeDeCategoriasCadastradas; ?></div>
                 <div class="cardName">Categorias Cadastradas</div>
             </div>
 
@@ -41,7 +51,7 @@ require 'components/menuLateral.php';
 
         <div class="card">
             <div>
-                <div class="numbers">2</div>
+                <div class="numbers"><?php echo $quantidadeDeUsuariosCadastrados; ?></div>
                 <div class="cardName">Usuarios Cadastrados</div>
             </div>
 
@@ -59,7 +69,7 @@ require 'components/menuLateral.php';
                 <a href="#" class="btn">Ver Todos</a>
             </div>
 
-            <table>
+            <table class="fixed-header">
                 <thead>
                     <tr>
                         <td>Nome</td>
@@ -70,61 +80,21 @@ require 'components/menuLateral.php';
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>Star Refrigerator</td>
-                        <td>R$ 1200</td>
-                        <td>Paid</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
+                    <?php if (!empty($ultimosProdutosCadastrados)) : ?>
+                        <?php foreach ($ultimosProdutosCadastrados as $produto) : ?>
+                            <tr>
+                                <td><?php echo $produto['nome']; ?></td>
+                                <td><?php echo $produto['preco_unitario']; ?></td>
+                                <td><?php echo $produto['categoria_id']; ?></td>
+                                <td><button class="details-btn">Detalhes</button></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="4">Nenhum produto cadastrado recentemente.</td>
+                        </tr>
+                    <?php endif; ?>
 
-                    <tr>
-                        <td>Dell Laptop</td>
-                        <td>R$ 110</td>
-                        <td>Due</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
-
-                    <tr>
-                        <td>Apple Watch</td>
-                        <td>R$ 1200</td>
-                        <td>Paid</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
-
-                    <tr>
-                        <td>Addidas Shoes</td>
-                        <td>R$ 620</td>
-                        <td>Due</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
-
-                    <tr>
-                        <td>Star Refrigerator</td>
-                        <td>R$ 1200</td>
-                        <td>Paid</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
-
-                    <tr>
-                        <td>Dell Laptop</td>
-                        <td>R$ 110</td>
-                        <td>Due</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
-
-                    <tr>
-                        <td>Apple Watch</td>
-                        <td>R$ 1200</td>
-                        <td>Paid</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
-
-                    <tr>
-                        <td>Addidas Shoes</td>
-                        <td>R$ 620</td>
-                        <td>Due</td>
-                        <td><button class="details-btn">Detalhes</button></td>
-                    </tr>
                 </tbody>
             </table>
         </div>

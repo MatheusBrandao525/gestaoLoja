@@ -28,3 +28,60 @@ realFileInput.addEventListener('change', function() {
 });
 
 });
+
+
+$(document).ready(function () {
+    $('.form-importar-produtos').submit(function (event) {
+        event.preventDefault();
+
+        var form = $(this);
+        var formData = new FormData(form[0]);
+
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('.mensagem-importacao-produtos p').text(response);
+                setTimeout(function() {
+                    $('.mensagem-importacao-produtos p').fadeOut();
+                }, 5000);
+                form[0].reset();
+                $('.file-upload-preview').text(''); // Limpa o conteúdo do campo de upload de arquivo
+            },
+            error: function (xhr, status, error) {
+                $('.mensagem-importacao-produtos p').text('Erro ao importar produtos: ' + error);
+            }
+        });
+    });
+});
+
+$(document).ready(function () {
+    $('.image-upload-form').submit(function (event) {
+        event.preventDefault();
+
+        var form = $(this);
+        var formData = new FormData(form[0]);
+
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('.mensagem-importacao-imagens p').text(response);
+                setTimeout(function() {
+                    $('.mensagem-importacao-imagens p').fadeOut();
+                }, 5000);
+                form[0].reset();
+                $('.image-file-upload-preview').text(''); // Limpa o conteúdo do campo de upload de imagem
+            },
+            error: function (xhr, status, error) {
+                $('.mensagem-importacao-imagens p').text('Erro ao importar imagens: ' + error);
+            }
+        });
+    });
+});

@@ -376,10 +376,6 @@ class ProdutoController
                     exit();
                 }
 
-                echo '<pre>';
-                print_r($imagensProdutos);
-                echo '</pre>';
-
                 foreach ($imagensProdutos as $imagemProduto) {
                     $produtoId = $imagemProduto['id_produto'];
                     $extensao = $imagemProduto['extensao'];

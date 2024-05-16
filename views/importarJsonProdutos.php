@@ -7,7 +7,7 @@ require_once 'components/menuLateral.php';
         <div class="coluna-inteira">
             <div class="coluna-metade">
                 <h4>Importar produtos</h4>
-                <form action="processarProdutosImportados" method="POST" enctype="multipart/form-data">
+                <form class="form-importar-produtos" action="processarProdutosImportados" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="column">
                             <div class="file-upload-wrapper">
@@ -27,7 +27,7 @@ require_once 'components/menuLateral.php';
             </div>
             <div class="coluna-metade">
                 <div class="mensagem-importacao-produtos">
-                    <p>Aqui vai ficar a mensagem de importação dos produtos.</p>
+                    <p></p>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@ require_once 'components/menuLateral.php';
             </div>
             <div class="coluna-metade">
                 <div class="mensagem-importacao-imagens">
-                    <p>Aqui vai ficar a mensagem de importação das iamgens dos produtos.</p>
+                    <p></p>
                 </div>
             </div>
         </div>

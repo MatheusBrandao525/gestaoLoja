@@ -2,14 +2,18 @@
 require_once 'controllers/ProdutoController.php';
 require_once 'controllers/UsuarioController.php';
 require_once 'controllers/CategoriaController.php';
+require_once 'controllers/ClienteController.php';
 require 'components/menuLateral.php';
 $usuarioController = new UsuarioController();
 $produtoController = new ProdutoController();
 $categoriaController = new CategoriaController();
+$clienteController = new ClienteController();
 $ultimosProdutosCadastrados = $produtoController->exibirUltimosProdutosCadastrados();
+$ultimosClientesCadastrados = $clienteController->exibirUltimosClientesCadastrados();
 $quantidadeDeprodutosCadastrados = $produtoController->exibirQuantidadeDeProdutosCadastrados();
 $quantidadeDeUsuariosCadastrados = $usuarioController->exibirQuantidadeDeUsuariosCadastrados();
 $quantidadeDeCategoriasCadastradas = $categoriaController->exibirQuantidadeDeCategoriasCadastradas();
+$quantidadeDeClientesCadastrados = $clienteController->exibirQuantidadeDeClientesCadastrados();
 ?>
 <div class="main">
 
@@ -29,7 +33,7 @@ $quantidadeDeCategoriasCadastradas = $categoriaController->exibirQuantidadeDeCat
 
         <div class="card">
             <div>
-                <div class="numbers">0</div>
+                <div class="numbers"><?php echo $quantidadeDeClientesCadastrados;?></div>
                 <div class="cardName">Clientes Cadastrados</div>
             </div>
 
@@ -81,18 +85,18 @@ $quantidadeDeCategoriasCadastradas = $categoriaController->exibirQuantidadeDeCat
 
                 <tbody>
                     <?php if (!empty($ultimosProdutosCadastrados)) : ?>
-                        <?php foreach ($ultimosProdutosCadastrados as $produto) : ?>
-                            <tr>
-                                <td><?php echo $produto['nome']; ?></td>
-                                <td><?php echo $produto['preco_unitario']; ?></td>
-                                <td><?php echo $produto['categoria_id']; ?></td>
-                                <td><button class="details-btn">Detalhes</button></td>
-                            </tr>
-                        <?php endforeach; ?>
+                    <?php foreach ($ultimosProdutosCadastrados as $produto) : ?>
+                    <tr>
+                        <td><?php echo $produto['nome']; ?></td>
+                        <td><?php echo $produto['preco_unitario']; ?></td>
+                        <td><?php echo $produto['categoria_id']; ?></td>
+                        <td><button class="details-btn">Detalhes</button></td>
+                    </tr>
+                    <?php endforeach; ?>
                     <?php else : ?>
-                        <tr>
-                            <td colspan="4">Nenhum produto cadastrado recentemente.</td>
-                        </tr>
+                    <tr>
+                        <td colspan="4">Nenhum produto cadastrado recentemente.</td>
+                    </tr>
                     <?php endif; ?>
 
                 </tbody>
@@ -106,77 +110,22 @@ $quantidadeDeCategoriasCadastradas = $categoriaController->exibirQuantidadeDeCat
             </div>
 
             <table>
+                <?php if (!empty($ultimosClientesCadastrados)) : ?>
+                <?php foreach ($ultimosClientesCadastrados as $cliente) : ?>
                 <tr>
                     <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
+                        <h4><?php echo $cliente['cliente_id']?><br></h4>
                     </td>
-                    <td>
-                        <h4>David <br> <span>Italy</span></h4>
+                    <td class="dados-cliente-home">
+                        <h4><?php echo $cliente['nome']?><br> <span>CPF: <?php echo $cliente['cpf'];?></span></h4>
                     </td>
                 </tr>
-
+                <?php endforeach; ?>
+                <?php else : ?>
                 <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
+                    <td colspan="4">Nenhum produto cadastrado recentemente.</td>
                 </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>David <br> <span>Italy</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>David <br> <span>Italy</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>David <br> <span>Italy</span></h4>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td width="60px">
-                        <div class="imgBx"><img src="public/assets/img/placeholder.jpg" alt=""></div>
-                    </td>
-                    <td>
-                        <h4>Amit <br> <span>India</span></h4>
-                    </td>
-                </tr>
+                <?php endif; ?>
             </table>
         </div>
     </div>

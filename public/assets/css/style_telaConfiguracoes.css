@@ -1,0 +1,40 @@
+.config-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  flex-direction: column;
+}
+
+.secao-redes-sociais {
+  padding-top: 1rem;
+  margin-bottom: 20px;
+  padding-left: 10px;
+  display: flex;
+  background-color: #f3f3f3;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.form-container-config {
+  background-color: #f3f3f3;
+  padding-left: 0 !important;
+  border: none;
+  padding-top: 0 !important;
+  display: flex;
+  justify-content: center;
+}
+
+.form-container-config button {
+  width: 100px;
+  background-color: cadetblue;
+  border: 1px solid #333;
+}
+
+.form-container-config button,
+.form-container-config input {
+  margin: 0 !important;
+  height: 35px;
+}

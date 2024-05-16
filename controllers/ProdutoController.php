@@ -79,21 +79,21 @@ class ProdutoController
             } elseif ($_FILES['imagem1']['error'] !== UPLOAD_ERR_NO_FILE) {
                 throw new Exception("Erro ao carregar a imagem imagem1: " . $_FILES['imagem1']['error']);
             }
-    
+
             // Processamento da segunda imagem
             if (isset($_FILES['imagem2']) && $_FILES['imagem2']['error'] === UPLOAD_ERR_OK) {
                 $imagensNomes[1] = $this->processarImagem($_FILES['imagem2'], $diretorioDestino);
             } elseif ($_FILES['imagem2']['error'] !== UPLOAD_ERR_NO_FILE) {
                 throw new Exception("Erro ao carregar a imagem imagem2: " . $_FILES['imagem2']['error']);
             }
-    
+
             // Processamento da terceira imagem
             if (isset($_FILES['imagem3']) && $_FILES['imagem3']['error'] === UPLOAD_ERR_OK) {
                 $imagensNomes[2] = $this->processarImagem($_FILES['imagem3'], $diretorioDestino);
             } elseif ($_FILES['imagem3']['error'] !== UPLOAD_ERR_NO_FILE) {
                 throw new Exception("Erro ao carregar a imagem imagem3: " . $_FILES['imagem3']['error']);
             }
-    
+
 
             $conexao = Conexao::getInstance()->getConexao();
             $produtoDao = new ProdutoDao($conexao);
@@ -155,7 +155,7 @@ class ProdutoController
             try {
                 $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
                 $produtoAtual = $produtoDAO->buscarDadosProdutoPorId($produtoId);
-    
+
                 // Carrega os campos do formulário
                 $nome = filter_input(INPUT_POST, 'altera-nome', FILTER_SANITIZE_STRING);
                 $codigo = filter_input(INPUT_POST, 'altera-codigo', FILTER_SANITIZE_STRING);
@@ -168,14 +168,14 @@ class ProdutoController
                 $tamanhos = filter_input(INPUT_POST, 'altera-tamanhos', FILTER_SANITIZE_STRING);
                 $descricao = filter_input(INPUT_POST, 'altera-descricao', FILTER_SANITIZE_STRING);
                 $categoriaId = filter_input(INPUT_POST, 'altera-categoriaid', FILTER_SANITIZE_NUMBER_INT);
-    
+
                 $dadosParaAtualizar = [];
                 foreach (['nome', 'codigo', 'exibe_preco', 'preco_custo', 'preco_unitario', 'modelos', 'cor', 'destaque', 'tamanhos', 'descricao', 'categoria_id'] as $campo) {
                     if (isset($$campo) && $$campo != $produtoAtual[$campo]) {
                         $dadosParaAtualizar[$campo] = $$campo;
                     }
                 }
-    
+
                 $imagens = ['altera-imagem1', 'altera-imagem2', 'altera-imagem3'];
                 foreach ($imagens as $key => $imagem) {
                     if (isset($_FILES[$imagem]) && $_FILES[$imagem]['error'] === UPLOAD_ERR_OK) {
@@ -189,8 +189,8 @@ class ProdutoController
                         $dadosParaAtualizar[$nomeCampoImagem] = $nomeImagem;
                     }
                 }
-    
-    
+
+
                 if (!empty($dadosParaAtualizar)) {
                     $produto = new Produto(
                         $dadosParaAtualizar['nome'] ?? $produtoAtual['nome'],
@@ -229,19 +229,19 @@ class ProdutoController
         }
     }
 
-    
+
     public function excluirImagemProduto()
     {
         $conexao = Conexao::getInstance()->getConexao();
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $produtoId = filter_input(INPUT_POST, 'produtoId', FILTER_SANITIZE_NUMBER_INT);
             $imagem = filter_input(INPUT_POST, 'imagem', FILTER_SANITIZE_STRING);
-            
+
             $conexao = Conexao::getInstance()->getConexao();
             $produtoDAO = new ProdutoDAO($conexao);
-                
+
             $resultado = $produtoDAO->excluirImagemProdutoDatabase($produtoId, $imagem);
-            
+
             header('Content-Type: application/json');
             if ($resultado) {
                 echo json_encode(['success' => true, 'message' => 'Imagem excluída com sucesso.']);
@@ -252,9 +252,8 @@ class ProdutoController
             http_response_code(405);
             echo json_encode(['error' => 'Método de requisição não permitido.']);
         }
-
     }
-        
+
     public function buscarProdutosPorCategoria()
     {
         $conexao = Conexao::getInstance()->getConexao();
@@ -268,7 +267,7 @@ class ProdutoController
         }
         return $produtos; // Retornar produtos ou erro
     }
-    
+
     private function processarImagem($file, $diretorioDestino)
     {
         $imagemTemp = $file['tmp_name'];
@@ -290,26 +289,26 @@ class ProdutoController
             if ($_FILES['fileUpload']['error'] != UPLOAD_ERR_OK) {
                 die("Erro no upload: " . $_FILES['fileUpload']['error']);
             }
-    
+
             $jsonFile = file_get_contents($_FILES['fileUpload']['tmp_name']);
             $produtos = json_decode($jsonFile, true);
-    
+
             if (!is_array($produtos)) {
                 die("Erro ao decodificar o JSON.");
             }
-    
+
             foreach ($produtos as $produto) {
                 $inicioPromocao = $utilidades->formatarDataParaMySQL($produto['inicio_promocao']);
                 $fimPromocao = $utilidades->formatarDataParaMySQL($produto['fim_promocao']);
-    
+
                 $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
                 $stmt->execute([$produto['id']]);
                 $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
                 if ($produtoExistente) {
                     $camposParaAtualizar = [];
                     $valoresParaAtualizar = [];
-    
+
                     foreach ($produto as $campo => $valor) {
                         if ($campo === 'id') {
                             continue;
@@ -325,7 +324,7 @@ class ProdutoController
                             $valoresParaAtualizar[] = $valor;
                         }
                     }
-    
+
                     if (count($camposParaAtualizar) > 0) {
                         $sqlUpdate = "UPDATE produtos SET " . implode(', ', $camposParaAtualizar) . " WHERE codigo = ?";
                         $valoresParaAtualizar[] = $produto['id'];
@@ -352,7 +351,7 @@ class ProdutoController
                     ]);
                 }
             }
-    
+
             echo "Produtos importados com sucesso!";
         }
     }
@@ -362,16 +361,16 @@ class ProdutoController
         $conexao = Conexao::getInstance()->getConexao();
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imageUpload'])) {
             $fileCount = count($_FILES['imageUpload']['name']);
-    
+
             for ($i = 0; $i < $fileCount; $i++) {
                 if ($_FILES['imageUpload']['error'][$i] !== UPLOAD_ERR_OK) {
                     echo "Erro no upload do arquivo " . $_FILES['imageUpload']['name'][$i] . ": " . $_FILES['imageUpload']['error'][$i];
                     continue;
                 }
-    
+
                 $jsonFile = file_get_contents($_FILES['imageUpload']['tmp_name'][$i]);
                 $imagensProdutos = json_decode($jsonFile, true);
-    
+
                 if (!is_array($imagensProdutos)) {
                     echo "Erro ao decodificar o JSON.";
                     exit();
@@ -380,37 +379,37 @@ class ProdutoController
                 echo '<pre>';
                 print_r($imagensProdutos);
                 echo '</pre>';
-    
+
                 foreach ($imagensProdutos as $imagemProduto) {
                     $produtoId = $imagemProduto['id_produto'];
                     $extensao = $imagemProduto['extensao'];
                     $imagemBase64 = $imagemProduto['foto'];
-    
+
                     $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
                     $stmt->execute([$produtoId]);
                     $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
                     if ($produtoExistente) {
                         $imagemBinaria = base64_decode($imagemBase64);
                         if ($imagemBinaria === false) {
                             echo "Erro ao decodificar imagem em base64 para o produto ID: $produtoId\n";
                             continue;
                         }
-    
+
                         $nomeUnicoImagem = md5($imagemBase64 . microtime()) . $extensao;
-    
+
                         $caminhoSalvar = "public/assets/img/produtos/$nomeUnicoImagem";
-    
+
                         if (!file_put_contents($caminhoSalvar, $imagemBinaria)) {
                             echo "Erro ao salvar a imagem para o produto ID: $produtoId\n";
                             continue;
                         }
-    
+
                         $sqlConsulta = "SELECT imagem1, imagem2, imagem3 FROM produtos WHERE codigo = ?";
                         $stmtConsulta = $conexao->prepare($sqlConsulta);
                         $stmtConsulta->execute([$produtoId]);
                         $resultado = $stmtConsulta->fetch();
-    
+
                         if ($resultado) {
                             $campoAtualizar = null;
                             if (empty($resultado['imagem1'])) {
@@ -420,7 +419,7 @@ class ProdutoController
                             } elseif (empty($resultado['imagem3'])) {
                                 $campoAtualizar = 'imagem3';
                             }
-    
+
                             if ($campoAtualizar) {
                                 $sqlUpdate = "UPDATE produtos SET $campoAtualizar = ? WHERE codigo = ?";
                                 $stmtUpdate = $conexao->prepare($sqlUpdate);
@@ -438,7 +437,7 @@ class ProdutoController
             }
         }
     }
-    
+
     public function pesquisaProdutos()
     {
         $conexao = Conexao::getInstance()->getConexao();
@@ -448,7 +447,7 @@ class ProdutoController
         $stmt = $conexao->prepare($sql);
         $stmt->execute(["%$pesquisa%", "%$pesquisa%"]);
         $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
         foreach ($produtos as $produto) {
             echo '<div class="produto-item">';
             echo '<div class="produto-imagem">';
@@ -465,5 +464,12 @@ class ProdutoController
             echo '</div></div></div>';
         }
     }
-    
+
+    public function exibirUltimosProdutosCadastrados()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $produtoDAO = new ProdutoDAO($conexao);
+
+        return $ultimosProdutosCadastrados = $produtoDAO->buscarUltimosProdutosCadastrados();
+    }
 }

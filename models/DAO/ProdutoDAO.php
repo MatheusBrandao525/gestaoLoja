@@ -120,7 +120,7 @@ class ProdutoDao
                     imagem3 = :imagem3, 
                     categoria_id = :categoriaId 
                     WHERE produto_id = :produtoId";
-    
+
             $nome = $produto->getNome();
             $codigo = $produto->getCodigo();
             $exibePreco = $produto->getExibePreco();
@@ -153,24 +153,24 @@ class ProdutoDao
             $stmt->bindValue(':categoriaId', $categoriaId);
             $stmt->bindValue(':produtoId', $produtoId);
             $stmt->execute();
-    
-                return ['success' => true, 'message' => 'Produto alterado com sucesso!'];
+
+            return ['success' => true, 'message' => 'Produto alterado com sucesso!'];
         } catch (PDOException $e) {
             return ['error' => 'Erro ao atualizar o produto: ' . $e->getMessage()];
         }
     }
-    
+
     public function excluirImagemProdutoDatabase($produtoId, $imagem)
     {
         try {
             $this->conexao->beginTransaction();
-    
+
             $sqlSelect = "SELECT {$imagem} FROM produtos WHERE produto_id = :produtoId";
             $stmtSelect = $this->conexao->prepare($sqlSelect);
             $stmtSelect->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
             $stmtSelect->execute();
             $nomeArquivoImagem = $stmtSelect->fetchColumn();
-    
+
             $sqlUpdate = "UPDATE produtos SET {$imagem} = NULL WHERE produto_id = :produtoId";
             $stmtUpdate = $this->conexao->prepare($sqlUpdate);
             $stmtUpdate->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
@@ -182,9 +182,9 @@ class ProdutoDao
                     unlink($caminhoImagem);
                 }
             }
-    
+
             $this->conexao->commit();
-    
+
             return true;
         } catch (Exception $e) {
             $this->conexao->rollBack();
@@ -192,20 +192,33 @@ class ProdutoDao
             return false;
         }
     }
-    
+
     public function buscarProdutosPorCategoriaDatabase($categoriaId)
     {
         $query = "SELECT * FROM produtos WHERE categoria_id = :categoriaId";
 
-        try{
+        try {
             $stmt = $this->conexao->prepare($query);
             $stmt->bindParam(":categoriaId", $categoriaId);
             $stmt->execute();
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return ['error' => "Erro ao buscar produtos por categoria: " . $e->getMessage()];
         }
     }
-    
+
+    public function buscarUltimosProdutosCadastrados()
+    {
+        $query = "SELECT * FROM produtos ORDER BY produto_id DESC LIMIT 8";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return ['error' => "Erro ao buscar os últimos produtos cadastrados: " . $e->getMessage()];
+        }
+    }
 }

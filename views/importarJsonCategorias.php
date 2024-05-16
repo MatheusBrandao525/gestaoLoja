@@ -6,7 +6,7 @@ require 'components/menuLateral.php';
     <div class="coluna-inteira-importa-categorias">
             <div class="coluna-inteira-importar-categorias">
                 <h4>Importar Categorias</h4>
-                <form action="processarCategoriasImportadas" method="POST" enctype="multipart/form-data">
+                <form class="form-importar-categorias" action="processarCategoriasImportadas" method="POST" enctype="multipart/form-data">
                     <div class="row">
                         <div class="column">
                             <div class="categoria-upload-wrapper">
@@ -26,7 +26,7 @@ require 'components/menuLateral.php';
             </div>
             <div class="coluna-inteira-importar-categorias">
                 <div class="mensagem-importacao-categorias">
-                    <p>Aqui vai ficar a mensagem de importação dos produtos.</p>
+                    <p></p>
                 </div>
             </div>
         </div>

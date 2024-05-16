@@ -204,18 +204,29 @@ class CategoriaController
                         if ($campo === 'id') {
                             continue;
                         }
-                        if ($categoriaExistente[$campo] != $valor) {
+                        if ($campo === 'nome' && isset($categoria['nome'])) {
+                            $valor = $categoria['nome'];
+                        }
+                        if (isset($categoriaExistente[$campo]) && $categoriaExistente[$campo] != $valor) {
+                            if ($campo === 'nome') {
+                                $campo = 'nome_categoria';
+                            }
                             $camposParaAtualizar[] = "$campo = ?";
                             $valoresParaAtualizar[] = $valor;
                         }
                     }
+                    
+                                    
 
                     if (count($camposParaAtualizar) > 0) {
                         $sqlUpdate = "UPDATE categorias SET " . implode(', ', $camposParaAtualizar) . " WHERE categoria_id = ?";
                         $valoresParaAtualizar[] = $categoria['id'];
                         $stmtUpdate = $conexao->prepare($sqlUpdate);
+
                         $stmtUpdate->execute($valoresParaAtualizar);
+
                     }
+                    
                 } else {
                     $sql = "INSERT INTO categorias (categoria_id, nome_categoria) VALUES (?, ?)";
                     $stmt = $conexao->prepare($sql);
@@ -223,9 +234,9 @@ class CategoriaController
                         $categoria['id'],
                         $categoria['nome']
                     ]);
+
                 }
             }
-
             echo "Categorias importadas com sucesso!";
         } else {
             echo 'Arquivo não encontrado!';

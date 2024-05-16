@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 $routes = [
     '/gestaoLoja/' => 'LoginController@telaLogin',
@@ -39,6 +40,8 @@ $routes = [
     '/gestaoLoja/erroLogin' => 'ErroController@telaErroLogin',
     '/gestaoLoja/cadastroCliente' => 'ClienteController@telaCadastroCliente',
     '/gestaoLoja/verClientes' => 'ClienteController@telaTodosOsClientes',
+    '/gestaoLoja/configuracoes' => 'ConfiguracoesController@telaConfiguracoes',
+    '/gestaoLoja/sair' => 'LoginController@sair',
 ];
 
 if (isset($_GET['url'])) {

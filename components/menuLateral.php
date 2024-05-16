@@ -252,6 +252,7 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
     <script src="public/assets/js/editarUsuario.js"></script>
     <script src="public/assets/js/importarCategorias.js"></script>
     <script src="public/assets/js/buscarProdutos.js"></script>
+    <script src="public/assets/js/salvarLinkRedeSocial.js"></script>
 
     <!-- ====== ionicons ======= -->
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

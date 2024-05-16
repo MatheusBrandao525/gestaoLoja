@@ -41,5 +41,86 @@ class ConfiguracoesController
             }
         }
     }
+
+    public function verificaSeWhatsappEstaSalvo($nomeRedeSocial)
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $query = "SELECT * FROM redes_sociais WHERE nome = :nomeRedeSocial";
+    
+        try {
+            $stmt = $conexao->prepare($query);
+            $stmt->bindParam(":nomeRedeSocial", $nomeRedeSocial);
+            $stmt->execute();
+    
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            echo "Erro ao tentar buscar dados da rede social '$nomeRedeSocial'. '$e'";
+        }
+    }
+    
+
+    public function verificaSeFacebookEstaSalvo($nomeRedeSocial)
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $query = "SELECT * FROM redes_sociais WHERE nome = :nomeRedeSocial";
+
+        try {
+            $stmt = $conexao->prepare($query);
+            $stmt->bindParam(":nomeRedeSocial", $nomeRedeSocial);
+            $stmt->execute();
+    
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            echo "Erro ao tentar buscar dados da rede social '$nomeRedeSocial'. '$e'";
+        } 
+    }
+
+    public function verificaSeInstagramEstaSalvo($nomeRedeSocial)
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $query = "SELECT * FROM redes_sociais WHERE nome = :nomeRedeSocial";
+
+        try {
+            $stmt = $conexao->prepare($query);
+            $stmt->bindParam(":nomeRedeSocial", $nomeRedeSocial);
+            $stmt->execute();
+    
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            echo "Erro ao tentar buscar dados da rede social '$nomeRedeSocial'. '$e'";
+        }
+    }
+
+    public function verificaSeTikTokEstaSalvo($nomeRedeSocial)
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $query = "SELECT * FROM redes_sociais WHERE nome = :nomeRedeSocial";
+
+        try {
+            $stmt = $conexao->prepare($query);
+            $stmt->bindParam(":nomeRedeSocial", $nomeRedeSocial);
+            $stmt->execute();
+    
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            echo "Erro ao tentar buscar dados da rede social '$nomeRedeSocial'. '$e'";
+        }
+    }
     
 }

@@ -39,4 +39,19 @@ class ClienteDAO
         }
     }
 
+    public function buscarTodosOsClientesCadastrados()
+    {
+        $query = "SELECT * FROM clientes";
+    
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+    
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return ['error' => "Erro ao buscar clientes: " . $e->getMessage()];
+        }
+    }
+    
+
 }

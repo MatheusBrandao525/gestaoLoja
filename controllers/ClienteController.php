@@ -32,4 +32,12 @@ class ClienteController
         return $ultimosClientesCadastrados = $clienteDAO->buscarUltimosClientesCadastrados();
     }
 
+    public function exibeTodosOsClientesCadastrados()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $clienteDAO = new ClienteDAO($conexao);
+        return $clienteDAO->buscarTodosOsClientesCadastrados();
+    }
+    
+
 }

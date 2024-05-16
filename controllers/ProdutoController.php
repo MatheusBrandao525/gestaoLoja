@@ -472,4 +472,12 @@ class ProdutoController
 
         return $ultimosProdutosCadastrados = $produtoDAO->buscarUltimosProdutosCadastrados();
     }
+
+    public function exibirQuantidadeDeProdutosCadastrados()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $produtoDAO = new ProdutoDAO($conexao);
+
+        return $quantidadeProdutos = $produtoDAO->contarProdutosCadastrados();
+    }
 }

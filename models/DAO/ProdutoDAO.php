@@ -221,4 +221,20 @@ class ProdutoDao
             return ['error' => "Erro ao buscar os últimos produtos cadastrados: " . $e->getMessage()];
         }
     }
+
+    public function contarProdutosCadastrados()
+    {
+        $query = "SELECT COUNT(*) AS total FROM produtos";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $resultado['total'];
+        } catch (Exception $e) {
+            return ['error' => "Erro ao contar produtos cadastrados: " . $e->getMessage()];
+        }
+    }
 }

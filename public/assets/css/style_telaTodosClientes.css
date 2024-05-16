@@ -1,0 +1,75 @@
+.busca-clientes{
+  padding: 10px;
+}
+
+.busca-clientes input{
+  font-size: 18px;
+  height: 50px;
+}
+
+.clientes-container {
+  display: flex;
+  width: 100% !important;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cliente-item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 20px;
+}
+
+.cliente-info {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  align-items: center;
+}
+
+.cliente-nome {
+  padding-left: 1.4rem;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.cliente-opcoes {
+  display: flex;
+  width: 30%;
+  justify-content: space-evenly;
+}
+
+.cliente-opcoes form {
+  border: none;
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+
+.cliente-opcoes .btn-excluir-cliente,
+.cliente-opcoes form .btn-editar-cliente {
+  background-color: #007bff;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  height: 40px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  border-radius: 3px;
+}
+
+.btn-editar:hover,
+.btn-excluir:hover,
+.cliente-opcoes form .btn-editar-cliente:hover,
+.cliente-opcoes .btn-excluir-cliente:hover {
+  background-color: #0056b3;
+}

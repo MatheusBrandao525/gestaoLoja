@@ -481,3 +481,8 @@ body {
   text-decoration: none;
   display: block;
 }
+
+.dados-cliente-home h4{
+  display: flex;
+  justify-content: space-evenly;
+}

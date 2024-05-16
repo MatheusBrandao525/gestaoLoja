@@ -41,6 +41,7 @@ $routes = [
     '/gestaoLoja/cadastroCliente' => 'ClienteController@telaCadastroCliente',
     '/gestaoLoja/verClientes' => 'ClienteController@telaTodosOsClientes',
     '/gestaoLoja/configuracoes' => 'ConfiguracoesController@telaConfiguracoes',
+    '/gestaoLoja/salvarRedeSocial' => 'ConfiguracoesController@salvarLinkRedesSociais',
     '/gestaoLoja/sair' => 'LoginController@sair',
 ];
 

@@ -109,22 +109,22 @@ class CategoriaDAO
                     nome_categoria = :nomeCategoria, 
                     imagem_categria = :imagemCategoria
                     WHERE categoria_id = :categoriaId";
-    
+
             // Obtém os valores da entidade Categoria
             $nomeCategoria = $categoria->getNome();
             $imagemCategoria = $categoria->getImagem();
-    
+
             // Prepara o statement
             $stmt = $this->conexao->prepare($sql);
-    
+
             // Vincula os parâmetros ao statement
             $stmt->bindValue(':nomeCategoria', $nomeCategoria);
             $stmt->bindValue(':imagemCategoria', $imagemCategoria);
             $stmt->bindValue(':categoriaId', $categoriaId);
-    
+
             // Executa o statement
             $stmt->execute();
-    
+
             // Retorna sucesso se a atualização ocorrer corretamente
             if ($stmt->rowCount() > 0) {
                 return ['success' => true, 'message' => 'Categoria atualizada com sucesso!'];
@@ -136,5 +136,20 @@ class CategoriaDAO
             return ['error' => 'Erro ao atualizar a categoria: ' . $e->getMessage()];
         }
     }
-    
+
+    public function contarQuantidadeCategoriasCadastradas()
+    {
+        $query = "SELECT COUNT(*) AS total FROM categorias";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $resultado['total'];
+        } catch (Exception $e) {
+            return ['error' => "Erro ao contar categorias cadastradas: " . $e->getMessage()];
+        }
+    }
 }

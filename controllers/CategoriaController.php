@@ -29,14 +29,14 @@ class CategoriaController
     public function cadastrarCategoria()
     {
         header('Content-Type: application/json');
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nomeCategoria = filter_input(INPUT_POST, 'nomeCategoria', FILTER_SANITIZE_STRING);
-    
+
             $validarSeCamposEstaoVazios = new utilidades();
             $validarSeCamposEstaoVazios->validarCampoVazio($nomeCategoria, "Nome");
 
-    
+
             $nomeImagemCategoria = null;
             if (isset($_FILES['imagemCategoria']) && $_FILES['imagemCategoria']['error'] === UPLOAD_ERR_OK) {
                 $arquivoTmp = $_FILES['imagemCategoria']['tmp_name'];
@@ -54,7 +54,7 @@ class CategoriaController
                 echo json_encode(['error' => "Erro ao carregar a imagem. Error Code: " . $_FILES['imagemCategoria']['error']]);
                 return;
             }
-    
+
             $conexao = Conexao::getInstance()->getConexao();
             $categoria = new Categoria($nomeCategoria, $nomeImagemCategoria);
             $categoriaDAO = new CategoriaDAO($conexao);
@@ -64,7 +64,7 @@ class CategoriaController
             echo json_encode(['error' => "Invalid request method. Only POST is allowed."]);
         }
     }
-    
+
 
     public function exibirTodasAsCategorias()
     {
@@ -115,23 +115,24 @@ class CategoriaController
         }
     }
 
-    public function editarCategoria() {
+    public function editarCategoria()
+    {
         $conexao = Conexao::getInstance()->getConexao();
         $categoriaDAO = new CategoriaDAO($conexao);
         header('Content-Type: application/json');
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $categoriaId = filter_input(INPUT_POST, 'categoriaId', FILTER_SANITIZE_NUMBER_INT);
                 $categoriaAtual = $categoriaDAO->buscarDadosCategoriaPorId($categoriaId);
-    
+
                 $nomeCategoria = filter_input(INPUT_POST, 'nomeCategoria', FILTER_SANITIZE_STRING);
                 $dadosParaAtualizar = [];
-    
+
                 if ($nomeCategoria && $nomeCategoria !== $categoriaAtual['nome_categoria']) {
                     $dadosParaAtualizar['nome_categoria'] = $nomeCategoria;
                 }
-    
+
                 if (isset($_FILES['imagemCategoria']) && $_FILES['imagemCategoria']['error'] === UPLOAD_ERR_OK) {
                     $arquivoAntigo = $categoriaAtual['imagem_categoria'] ?? null;
                     if ($arquivoAntigo) {
@@ -146,7 +147,7 @@ class CategoriaController
                     move_uploaded_file($arquivoTmp, $caminhoCompleto);
                     $dadosParaAtualizar['imagem_categoria'] = $nomeUnico;
                 }
-    
+
                 if (!empty($dadosParaAtualizar)) {
                     $categoria = new Categoria(
                         $dadosParaAtualizar['nome_categoria'] ?? $categoriaAtual['nome_categoria'],
@@ -177,28 +178,28 @@ class CategoriaController
     {
         $conexao = Conexao::getInstance()->getConexao();
         $utilidades = new Utilidades();
-    
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['categoriasFileUpload'])) {
             if ($_FILES['categoriasFileUpload']['error'] != UPLOAD_ERR_OK) {
                 die("Erro no upload: " . $_FILES['categoriasFileUpload']['error']);
             }
-    
+
             $jsonFile = file_get_contents($_FILES['categoriasFileUpload']['tmp_name']);
             $categorias = json_decode($jsonFile, true);
-    
+
             if (!is_array($categorias)) {
                 die("Erro ao decodificar o JSON.");
             }
-    
+
             foreach ($categorias as $categoria) {
                 $stmt = $conexao->prepare("SELECT * FROM categorias WHERE categoria_id = ?");
                 $stmt->execute([$categoria['id']]);
                 $categoriaExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
                 if ($categoriaExistente) {
                     $camposParaAtualizar = [];
                     $valoresParaAtualizar = [];
-    
+
                     foreach ($categoria as $campo => $valor) {
                         if ($campo === 'id') {
                             continue;
@@ -208,7 +209,7 @@ class CategoriaController
                             $valoresParaAtualizar[] = $valor;
                         }
                     }
-    
+
                     if (count($camposParaAtualizar) > 0) {
                         $sqlUpdate = "UPDATE categorias SET " . implode(', ', $camposParaAtualizar) . " WHERE categoria_id = ?";
                         $valoresParaAtualizar[] = $categoria['id'];
@@ -224,12 +225,18 @@ class CategoriaController
                     ]);
                 }
             }
-    
+
             echo "Categorias importadas com sucesso!";
         } else {
             echo 'Arquivo não encontrado!';
         }
     }
-    
-    
+
+    public function exibirQuantidadeDeCategoriasCadastradas()
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        $categoriaDAO = new CategoriaDAO($conexao);
+
+        return $quantidadeCategorias = $categoriaDAO->contarQuantidadeCategoriasCadastradas();
+    }
 }

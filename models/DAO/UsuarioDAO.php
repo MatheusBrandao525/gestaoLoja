@@ -17,7 +17,7 @@ class UsuarioDAO
             $stmt->bindParam(":usuarioEmail", $email);
             $stmt->bindParam(":usuarioSenha", $senha);
             $stmt->execute();
-    
+
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($usuario) {
                 return $usuario;
@@ -28,7 +28,7 @@ class UsuarioDAO
             return false;
         }
     }
-    
+
 
     public function buscarTodosOsUsuariosCadastrados()
     {
@@ -128,7 +128,7 @@ class UsuarioDAO
             $stmt->bindValue(':foto', $dados['foto']);
             $stmt->bindValue(':usuarioId', $usuarioId);
             $stmt->execute();
-    
+
             if ($stmt->rowCount() > 0) {
                 return ['success' => true, 'message' => 'Dados do usuário atualizados com sucesso!'];
             } else {
@@ -138,5 +138,20 @@ class UsuarioDAO
             return ['error' => 'Erro ao atualizar os dados do usuário: ' . $e->getMessage()];
         }
     }
-    
+
+    public function contarUsuariosCadastrados()
+    {
+        $query = "SELECT COUNT(*) AS total FROM usuarios";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->execute();
+
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $resultado['total'];
+        } catch (Exception $e) {
+            return ['error' => "Erro ao contar usuários cadastrados: " . $e->getMessage()];
+        }
+    }
 }

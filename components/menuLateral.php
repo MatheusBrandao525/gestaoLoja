@@ -26,6 +26,7 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
     <link rel="stylesheet" href="public/assets/css/style_telaEditarUsuario.css">
     <link rel="stylesheet" href="public/assets/css/style_importarCategorias.css">
     <link rel="stylesheet" href="public/assets/css/style_telaConfiguracoes.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaTodosClientes.css">
 
     <style>
         .dropbtn {

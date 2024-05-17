@@ -177,7 +177,6 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
                         </div>
                     </a>
                     <div class="dropdown-content">
-                        <a href="cadastroCliente">Cadastrar Cliente</a>
                         <a href="verClientes">Ver Clientes</a>
                     </div>
                 </li>

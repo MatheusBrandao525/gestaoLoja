@@ -160,31 +160,28 @@ class ProdutoDao
         }
     }
 
-    public function excluirImagemProdutoDatabase($produtoId, $imagem)
+    public function excluirImagemProdutoDatabase($produtoId, $urlImagem)
     {
         try {
             $this->conexao->beginTransaction();
-
-            $sqlSelect = "SELECT {$imagem} FROM produtos WHERE produto_id = :produtoId";
-            $stmtSelect = $this->conexao->prepare($sqlSelect);
-            $stmtSelect->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
-            $stmtSelect->execute();
-            $nomeArquivoImagem = $stmtSelect->fetchColumn();
-
-            $sqlUpdate = "UPDATE produtos SET {$imagem} = NULL WHERE produto_id = :produtoId";
+    
+            $nomeArquivoImagem = basename($urlImagem);
+    
+            $caminhoRelativoImagem = str_replace(PAINEL_URL_BASE . '/', '', $urlImagem);
+    
+            $sqlUpdate = "UPDATE produtos SET imagem1 = NULL WHERE produto_id = :produtoId AND imagem1 = :urlImagem";
             $stmtUpdate = $this->conexao->prepare($sqlUpdate);
             $stmtUpdate->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
+            $stmtUpdate->bindParam(':urlImagem', $urlImagem, PDO::PARAM_STR);
             $stmtUpdate->execute();
-
-            if ($nomeArquivoImagem) {
-                $caminhoImagem = "public/assets/img/produtos/{$nomeArquivoImagem}";
-                if (file_exists($caminhoImagem)) {
-                    unlink($caminhoImagem);
-                }
+    
+            $caminhoImagem = "public/assets/img/produtos/{$caminhoRelativoImagem}";
+            if (file_exists($caminhoImagem)) {
+                unlink($caminhoImagem);
             }
-
+    
             $this->conexao->commit();
-
+    
             return true;
         } catch (Exception $e) {
             $this->conexao->rollBack();
@@ -192,6 +189,7 @@ class ProdutoDao
             return false;
         }
     }
+    
 
     public function buscarProdutosPorCategoriaDatabase($categoriaId)
     {

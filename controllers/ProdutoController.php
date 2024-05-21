@@ -71,34 +71,49 @@ class ProdutoController
             $validarSeCamposEstaoVazios->validarCampoVazio($categoriaId, "Categoria ID");
 
             $diretorioDestino = "public/assets/img/produtos/";
-            $imagensNomes = [null, null, null]; // Array para armazenar os nomes das imagens
-
-            // Processamento da primeira imagem
+            $imagensNomes = [null, null, null];
+    
             if (isset($_FILES['imagem1']) && $_FILES['imagem1']['error'] === UPLOAD_ERR_OK) {
                 $imagensNomes[0] = $this->processarImagem($_FILES['imagem1'], $diretorioDestino);
+                $imagensNomes[0] = PAINEL_URL_BASE . '/' . $diretorioDestino . $imagensNomes[0];
             } elseif ($_FILES['imagem1']['error'] !== UPLOAD_ERR_NO_FILE) {
                 throw new Exception("Erro ao carregar a imagem imagem1: " . $_FILES['imagem1']['error']);
             }
 
-            // Processamento da segunda imagem
             if (isset($_FILES['imagem2']) && $_FILES['imagem2']['error'] === UPLOAD_ERR_OK) {
                 $imagensNomes[1] = $this->processarImagem($_FILES['imagem2'], $diretorioDestino);
+                $imagensNomes[1] = PAINEL_URL_BASE . '/' . $diretorioDestino . $imagensNomes[1];
             } elseif ($_FILES['imagem2']['error'] !== UPLOAD_ERR_NO_FILE) {
                 throw new Exception("Erro ao carregar a imagem imagem2: " . $_FILES['imagem2']['error']);
             }
 
-            // Processamento da terceira imagem
+
             if (isset($_FILES['imagem3']) && $_FILES['imagem3']['error'] === UPLOAD_ERR_OK) {
                 $imagensNomes[2] = $this->processarImagem($_FILES['imagem3'], $diretorioDestino);
+                $imagensNomes[2] = PAINEL_URL_BASE . '/' . $diretorioDestino . $imagensNomes[2];
             } elseif ($_FILES['imagem3']['error'] !== UPLOAD_ERR_NO_FILE) {
                 throw new Exception("Erro ao carregar a imagem imagem3: " . $_FILES['imagem3']['error']);
             }
 
-
             $conexao = Conexao::getInstance()->getConexao();
             $produtoDao = new ProdutoDao($conexao);
 
-            $produto = new Produto($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $tamanhos, $descricao, $imagensNomes[0] ?? null, $imagensNomes[1] ?? null, $imagensNomes[2] ?? null, $categoriaId);
+            $produto = new Produto(
+                $nome,
+                $codigo,
+                $exibePreco,
+                $precoCusto,
+                $precoUnitario,
+                $modelos,
+                $cor,
+                $destaque,
+                $tamanhos,
+                $descricao,
+                $imagensNomes[0] ?? null,
+                $imagensNomes[1] ?? null,
+                $imagensNomes[2] ?? null,
+                $categoriaId
+            );
             $produtoDao->cadastro($produto);
         } else {
             throw new Exception("Invalid request method.");
@@ -186,7 +201,7 @@ class ProdutoController
                         }
                         $diretorioDestino = "public/assets/img/produtos/";
                         $nomeImagem = $this->processarImagem($_FILES[$imagem], $diretorioDestino);
-                        $dadosParaAtualizar[$nomeCampoImagem] = $nomeImagem;
+                        $dadosParaAtualizar[$nomeCampoImagem] = PAINEL_URL_BASE . '/' . $diretorioDestino . $nomeImagem; // Construir URL completa
                     }
                 }
 
@@ -289,26 +304,26 @@ class ProdutoController
             if ($_FILES['fileUpload']['error'] != UPLOAD_ERR_OK) {
                 die("Erro no upload: " . $_FILES['fileUpload']['error']);
             }
-
+    
             $jsonFile = file_get_contents($_FILES['fileUpload']['tmp_name']);
             $produtos = json_decode($jsonFile, true);
-
+    
             if (!is_array($produtos)) {
                 die("Erro ao decodificar o JSON.");
             }
-
+    
             foreach ($produtos as $produto) {
                 $inicioPromocao = $utilidades->formatarDataParaMySQL($produto['inicio_promocao']);
                 $fimPromocao = $utilidades->formatarDataParaMySQL($produto['fim_promocao']);
-
+    
                 $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
                 $stmt->execute([$produto['id']]);
                 $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
                 if ($produtoExistente) {
                     $camposParaAtualizar = [];
                     $valoresParaAtualizar = [];
-
+    
                     foreach ($produto as $campo => $valor) {
                         if ($campo === 'id') {
                             continue;
@@ -319,12 +334,15 @@ class ProdutoController
                         if ($campo === 'fim_promocao') {
                             $valor = $fimPromocao;
                         }
+                        if ($campo === 'id_grupo') {
+                            $campo = 'categoria_id';
+                        }
                         if ($produtoExistente[$campo] != $valor) {
                             $camposParaAtualizar[] = "$campo = ?";
                             $valoresParaAtualizar[] = $valor;
                         }
                     }
-
+    
                     if (count($camposParaAtualizar) > 0) {
                         $sqlUpdate = "UPDATE produtos SET " . implode(', ', $camposParaAtualizar) . " WHERE codigo = ?";
                         $valoresParaAtualizar[] = $produto['id'];
@@ -332,14 +350,14 @@ class ProdutoController
                         $stmtUpdate->execute($valoresParaAtualizar);
                     }
                 } else {
-                    $sql = "INSERT INTO produtos (codigo, nome, descricao, unidade, id_grupo, preco_venda_1, preco_venda_2, preco_venda_3, preco_venda_4, preco_venda_5, preco_promocao, inicio_promocao, fim_promocao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    $sql = "INSERT INTO produtos (codigo, nome, descricao, unidade, categoria_id, preco_venda_1, preco_venda_2, preco_venda_3, preco_venda_4, preco_venda_5, preco_promocao, inicio_promocao, fim_promocao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                     $stmt = $conexao->prepare($sql);
                     $stmt->execute([
                         $produto['id'],
                         $produto['nome'],
                         $produto['descricao'],
                         $produto['unidade'],
-                        $produto['id_grupo'],
+                        $produto['id_grupo'], // Aqui o id_grupo está sendo mapeado para categoria_id
                         $produto['preco_venda_1'],
                         $produto['preco_venda_2'],
                         $produto['preco_venda_3'],
@@ -351,61 +369,64 @@ class ProdutoController
                     ]);
                 }
             }
-
+    
             echo "Produtos importados com sucesso!";
         }
     }
+    
 
     public function processarImagensImportadas()
     {
         $conexao = Conexao::getInstance()->getConexao();
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imageUpload'])) {
             $fileCount = count($_FILES['imageUpload']['name']);
-
+    
             for ($i = 0; $i < $fileCount; $i++) {
                 if ($_FILES['imageUpload']['error'][$i] !== UPLOAD_ERR_OK) {
                     echo "Erro no upload do arquivo " . $_FILES['imageUpload']['name'][$i] . ": " . $_FILES['imageUpload']['error'][$i];
                     continue;
                 }
-
+    
                 $jsonFile = file_get_contents($_FILES['imageUpload']['tmp_name'][$i]);
                 $imagensProdutos = json_decode($jsonFile, true);
-
+    
                 if (!is_array($imagensProdutos)) {
                     echo "Erro ao decodificar o JSON.";
                     exit();
                 }
-
+    
                 foreach ($imagensProdutos as $imagemProduto) {
                     $produtoId = $imagemProduto['id_produto'];
                     $extensao = $imagemProduto['extensao'];
                     $imagemBase64 = $imagemProduto['foto'];
-
+    
                     $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
                     $stmt->execute([$produtoId]);
                     $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-
+    
                     if ($produtoExistente) {
                         $imagemBinaria = base64_decode($imagemBase64);
                         if ($imagemBinaria === false) {
                             echo "Erro ao decodificar imagem em base64 para o produto ID: $produtoId\n";
                             continue;
                         }
-
+    
                         $nomeUnicoImagem = md5($imagemBase64 . microtime()) . $extensao;
-
+    
                         $caminhoSalvar = "public/assets/img/produtos/$nomeUnicoImagem";
-
+    
                         if (!file_put_contents($caminhoSalvar, $imagemBinaria)) {
                             echo "Erro ao salvar a imagem para o produto ID: $produtoId\n";
                             continue;
                         }
-
+    
+                        $urlCompletaImagem = PAINEL_URL_BASE . '/' . $caminhoSalvar;
+    
                         $sqlConsulta = "SELECT imagem1, imagem2, imagem3 FROM produtos WHERE codigo = ?";
                         $stmtConsulta = $conexao->prepare($sqlConsulta);
                         $stmtConsulta->execute([$produtoId]);
                         $resultado = $stmtConsulta->fetch();
-
+    
                         if ($resultado) {
                             $campoAtualizar = null;
                             if (empty($resultado['imagem1'])) {
@@ -415,11 +436,11 @@ class ProdutoController
                             } elseif (empty($resultado['imagem3'])) {
                                 $campoAtualizar = 'imagem3';
                             }
-
+    
                             if ($campoAtualizar) {
                                 $sqlUpdate = "UPDATE produtos SET $campoAtualizar = ? WHERE codigo = ?";
                                 $stmtUpdate = $conexao->prepare($sqlUpdate);
-                                $stmtUpdate->execute([$nomeUnicoImagem, $produtoId]);
+                                $stmtUpdate->execute([$urlCompletaImagem, $produtoId]);
                             } else {
                                 echo "Todos os campos de imagem para este produto já estão preenchidos.";
                             }
@@ -433,6 +454,7 @@ class ProdutoController
             }
         }
     }
+    
 
     public function pesquisaProdutos()
     {

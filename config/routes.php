@@ -1,5 +1,6 @@
 <?php
 session_start();
+define('PAINEL_URL_BASE', 'https://painel.meudominio.com');
 
 $routes = [
     '/gestaoLoja/' => 'LoginController@telaLogin',

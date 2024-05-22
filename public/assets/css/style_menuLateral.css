@@ -412,6 +412,18 @@ body {
   color: var(--white);
 }
 
+.link-logo-colt-bella{
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  height: 100% !important;
+}
+
+.logo-colt-bella{
+  width: 180px;
+}
+
+
 /* ====================== Responsive Design ========================== */
 @media (max-width: 991px) {
   .navigation {

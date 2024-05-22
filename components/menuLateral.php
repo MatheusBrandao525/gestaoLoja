@@ -29,81 +29,81 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
     <link rel="stylesheet" href="public/assets/css/style_telaTodosClientes.css">
 
     <style>
-        .dropbtn {
-            cursor: pointer;
-            display: block;
-        }
+    .dropbtn {
+        cursor: pointer;
+        display: block;
+    }
 
-        .nome-icone {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            padding-right: 10px;
-            /* Espaçamento entre o título e a seta */
-        }
+    .nome-icone {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding-right: 10px;
+        /* Espaçamento entre o título e a seta */
+    }
 
-        .nome-icone .title {
-            margin-right: 10px;
-            /* Espaço entre o texto e a seta */
-        }
+    .nome-icone .title {
+        margin-right: 10px;
+        /* Espaço entre o texto e a seta */
+    }
 
-        .nome-icone i {
-            transition: transform 0.3s ease;
-            /* Suaviza a rotação */
-        }
+    .nome-icone i {
+        transition: transform 0.3s ease;
+        /* Suaviza a rotação */
+    }
 
 
-        .dropdown-content a {
-            color: black;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-        }
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
 
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
 
-        /* Dropdown container */
-        .dropdown {
-            position: relative;
-        }
+    /* Dropdown container */
+    .dropdown {
+        position: relative;
+    }
 
-        /* Estilização do conteúdo do dropdown com transição */
-        .dropdown-content {
-            max-height: 0;
-            overflow: hidden;
-            background-color: #f9f9f9;
-            min-width: 160px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
-            opacity: 0;
-            transition-delay: 0.25s;
-        }
+    /* Estilização do conteúdo do dropdown com transição */
+    .dropdown-content {
+        max-height: 0;
+        overflow: hidden;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+        opacity: 0;
+        transition-delay: 0.25s;
+    }
 
-        .dropdown-content.show {
-            max-height: 500px;
-            /* ajuste conforme necessário */
-            opacity: 1;
-            transition-delay: 0s;
-        }
+    .dropdown-content.show {
+        max-height: 500px;
+        /* ajuste conforme necessário */
+        opacity: 1;
+        transition-delay: 0s;
+    }
 
-        .dropdown {
-            position: relative;
-        }
+    .dropdown {
+        position: relative;
+    }
 
-        /* CSS para manter os outros itens no lugar enquanto o dropdown se expande */
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+    /* CSS para manter os outros itens no lugar enquanto o dropdown se expande */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
 
-        .details-btn {
-            background-color: #2790b0;
-            border: none;
-            padding: 5px;
-            border-radius: 5px;
-        }
+    .details-btn {
+        background-color: #2790b0;
+        border: none;
+        padding: 5px;
+        border-radius: 5px;
+    }
     </style>
 </head>
 
@@ -113,9 +113,10 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
         <div class="navigation">
             <ul>
                 <li>
-                    <a href="#">
+                    <a href="#" class="link-logo-colt-bella">
                         <span class="icon">
-                            <img src="public/assets/img/top_motos.png" alt="Brand Logo">
+                            <img class="logo-colt-bella" src="public/assets/img/logo/logo_colt_bella.png"
+                                alt="Brand Logo">
                         </span>
                     </a>
 
@@ -150,17 +151,20 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
                 <li class="dropdown">
                     <a href="#" class="dropbtn">
                         <span class="icon">
-                            <i class="fas fa-box-open"></i>
+                            <i class="fas fa-shipping-fast"></i>
                         </span>
                         <div class="nome-icone">
                             <span class="title">Pedidos</span>
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </a>
+
+
                     <div class="dropdown-content">
-                        <a href="importarProdutos">Pedidos Realizados</a>
-                        <a href="cadastroProduto">Atualizar Pedido</a>
-                        <a href="produtos">Pedidos Entregues</a>
+                        <a href="dashboardPedidos">Geral</a>
+                        <a href="pedidosRealizados">Pedidos Realizados</a>
+                        <a href="atualizarPedidos">Atualizar Pedido</a>
+                        <a href="pedidosEntregues">Pedidos Entregues</a>
                     </div>
                 </li>
 
@@ -276,54 +280,56 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var dropdowns = document.querySelectorAll('.dropdown');
-            dropdowns.forEach(function(dropdown) {
-                var btn = dropdown.querySelector('.dropbtn');
-                btn.addEventListener('click', function(event) {
-                    event.stopPropagation();
-                    var dropdownContent = this.nextElementSibling;
-                    var icon = this.querySelector('.nome-icone i'); // Seleciona o ícone de seta dentro de nome-icone
-                    if (dropdownContent.classList.contains('show')) {
-                        dropdownContent.classList.remove('show');
-                        icon.style.transform = 'rotate(0deg)'; // Seta aponta para baixo
-                    } else {
-                        closeAllDropdowns();
-                        dropdownContent.classList.add('show');
-                        icon.style.transform = 'rotate(180deg)'; // Seta aponta para cima
-                    }
-                });
-            });
-
-            function closeAllDropdowns() {
-                document.querySelectorAll('.dropdown-content').forEach(function(element) {
-                    element.classList.remove('show');
-                    var icon = element.previousElementSibling.querySelector('.nome-icone i');
-                    if (icon) {
-                        icon.style.transform = 'rotate(0deg)'; // Reseta a rotação da seta
-                    }
-                });
-            }
-
-            document.addEventListener('click', function(event) {
-                if (!event.target.matches('.dropbtn, .dropbtn *')) { // Inclui todos os filhos de dropbtn no seletor
+    document.addEventListener('DOMContentLoaded', function() {
+        var dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(function(dropdown) {
+            var btn = dropdown.querySelector('.dropbtn');
+            btn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                var dropdownContent = this.nextElementSibling;
+                var icon = this.querySelector(
+                '.nome-icone i'); // Seleciona o ícone de seta dentro de nome-icone
+                if (dropdownContent.classList.contains('show')) {
+                    dropdownContent.classList.remove('show');
+                    icon.style.transform = 'rotate(0deg)'; // Seta aponta para baixo
+                } else {
                     closeAllDropdowns();
+                    dropdownContent.classList.add('show');
+                    icon.style.transform = 'rotate(180deg)'; // Seta aponta para cima
                 }
             });
         });
+
+        function closeAllDropdowns() {
+            document.querySelectorAll('.dropdown-content').forEach(function(element) {
+                element.classList.remove('show');
+                var icon = element.previousElementSibling.querySelector('.nome-icone i');
+                if (icon) {
+                    icon.style.transform = 'rotate(0deg)'; // Reseta a rotação da seta
+                }
+            });
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.matches(
+                '.dropbtn, .dropbtn *')) { // Inclui todos os filhos de dropbtn no seletor
+                closeAllDropdowns();
+            }
+        });
+    });
     </script>
 
     <script>
-        function loadContent(option) {
-            const mainDiv = document.querySelector('.main');
+    function loadContent(option) {
+        const mainDiv = document.querySelector('.main');
 
-            fetch(`components/${option}.php`)
-                .then(response => response.text())
-                .then(html => {
-                    mainDiv.innerHTML = html;
-                })
-                .catch(error => console.error('Error loading the page: ', error));
-        }
+        fetch(`components/${option}.php`)
+            .then(response => response.text())
+            .then(html => {
+                mainDiv.innerHTML = html;
+            })
+            .catch(error => console.error('Error loading the page: ', error));
+    }
     </script>
 
 </body>

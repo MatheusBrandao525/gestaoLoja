@@ -147,6 +147,23 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
                     </div>
                 </li>
 
+                <li class="dropdown">
+                    <a href="#" class="dropbtn">
+                        <span class="icon">
+                            <i class="fas fa-box-open"></i>
+                        </span>
+                        <div class="nome-icone">
+                            <span class="title">Pedidos</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </a>
+                    <div class="dropdown-content">
+                        <a href="importarProdutos">Pedidos Realizados</a>
+                        <a href="cadastroProduto">Atualizar Pedido</a>
+                        <a href="produtos">Pedidos Entregues</a>
+                    </div>
+                </li>
+
 
                 <li class="dropdown">
                     <a href="#" class="dropbtn">

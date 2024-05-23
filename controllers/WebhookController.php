@@ -1,6 +1,6 @@
 <?php
 
-class Webhook
+class WebhookController
 {
     private string $api = 'https://api.mercadopago.com';
     private string $versao = 'v1';
@@ -168,7 +168,7 @@ $chave_privada = "TEST-6819797163859486-042622-0bb4b98962c0524f7c5f20053166a16b-
 $entrada = $dadosRecebidos;
 
 
-$webhook = new Webhook($chave_privada, $entrada, $cn);
+$webhook = new WebhookController($chave_privada, $entrada, $cn);
 $e = $webhook->executar();
 
 if (!is_null($e)) $e->salvar();

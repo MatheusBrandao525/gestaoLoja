@@ -1,7 +1,10 @@
 <?php
 require_once 'utils/Utilidades.php';
+require_once 'controllers/UsuarioController.php';
+$usuarioController = new UsuarioController();
 $utilidades = new Utilidades();
 $sessaoExiste = $utilidades->verificaSeSessaoExiste();
+$dadosUsuarioLogado = $usuarioController->verificarClasseUsuarioPorId($_SESSION['ID']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,6 +30,7 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
     <link rel="stylesheet" href="public/assets/css/style_importarCategorias.css">
     <link rel="stylesheet" href="public/assets/css/style_telaConfiguracoes.css">
     <link rel="stylesheet" href="public/assets/css/style_telaTodosClientes.css">
+    <link rel="stylesheet" href="public/assets/css/style_telaAcessoNegado.css">
 
     <style>
         .dropbtn {
@@ -231,7 +235,7 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
             </div>
 
             <div class="user">
-                <img src="public/assets/img/placeholder.jpg" alt="">
+                <img src="public/assets/img/usuarios/<?php echo $dadosUsuarioLogado['foto'];?>" alt="">
             </div>
         </div>
         <!-- ========================= Main ==================== -->

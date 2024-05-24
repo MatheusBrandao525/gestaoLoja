@@ -7,12 +7,47 @@ class UsuarioController
 {
     public function telaCadastrarUsuarios()
     {
+        // Verifica se o usuário está logado
+        if (!isset($_SESSION['ID'])) {
+            header("Location: /login");
+            exit;
+        }
+
+        $usuarioId = $_SESSION['ID'];
+        $usuario = $this->verificarClasseUsuarioPorId($usuarioId);
+
+        // Verifica a classe do usuário
+        if ($usuario['classe'] === 'admin' || $usuario['classe'] === 'sup') {
         include ROOT_PATH . '/views/cadastroUsuario.php';
+        } else {
+            header("Location: /acessoNegado");
+            exit;
+        }
     }
 
     public function telaTodosOsUsuarios()
     {
-        include ROOT_PATH . '/views/todosUsuarios.php';
+        // Verifica se o usuário está logado
+        if (!isset($_SESSION['ID'])) {
+            header("Location: /login");
+            exit;
+        }
+
+        $usuarioId = $_SESSION['ID'];
+        $usuario = $this->verificarClasseUsuarioPorId($usuarioId);
+
+        // Verifica a classe do usuário
+        if ($usuario['classe'] === 'admin' || $usuario['classe'] === 'sup') {
+            include ROOT_PATH . '/views/todosUsuarios.php';
+        } else {
+            header("Location: /acessoNegado");
+            exit;
+        }
+    }
+    
+    public function telaAcessoNegado()
+    {
+        include ROOT_PATH . '/views/acessoNegado.php';
     }
 
     public function telaEditarUsuario()
@@ -188,5 +223,21 @@ class UsuarioController
         $usuarioDAO = new UsuarioDAO($conexao);
 
         return $quantidadeUsuarios = $usuarioDAO->contarUsuariosCadastrados();
+    }
+    
+    public function verificarClasseUsuarioPorId($usuarioId)
+    {
+        $conexao = Conexao::getInstance()->getConexao();
+        if (!empty($usuarioId) && $usuarioId != null) {
+            $id = $usuarioId;
+
+            $usuarioDAO = new UsuarioDAO($conexao);
+
+            $dadosUsuario = $usuarioDAO->buscarDadosUsuarioPorId($id);
+
+            return $dadosUsuario;
+        } else {
+            echo json_encode(["error" => "Id do usuário é inválido."]);
+        }
     }
 }

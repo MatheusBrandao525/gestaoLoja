@@ -44,6 +44,7 @@ $routes = [
     '/gestaoLoja/configuracoes' => 'ConfiguracoesController@telaConfiguracoes',
     '/gestaoLoja/salvarRedeSocial' => 'ConfiguracoesController@salvarLinkRedesSociais',
     '/gestaoLoja/sair' => 'LoginController@sair',
+    '/gestaoLoja/acessoNegado' => 'UsuarioController@telaAcessoNegado',
 ];
 
 if (isset($_GET['url'])) {

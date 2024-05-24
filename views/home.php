@@ -1,10 +1,9 @@
 <?php
+require 'components/menuLateral.php';
 require_once 'controllers/ProdutoController.php';
-require_once 'controllers/UsuarioController.php';
 require_once 'controllers/CategoriaController.php';
 require_once 'controllers/ClienteController.php';
-require 'components/menuLateral.php';
-$usuarioController = new UsuarioController();
+
 $produtoController = new ProdutoController();
 $categoriaController = new CategoriaController();
 $clienteController = new ClienteController();

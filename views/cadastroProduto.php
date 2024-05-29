@@ -1,5 +1,8 @@
 <?php
 require 'components/menuLateral.php';
+require_once 'controllers/CategoriaController.php';
+$categoriaController = new CategoriaController();
+$categoriasData = $categoriaController->exibirTodasAsCategorias();
 ?>
 <div class="main">
     <div class="centralizar">
@@ -55,8 +58,9 @@ require 'components/menuLateral.php';
                     <label for="categoriaid">Categoria</label>
                     <select id="categoriaid" name="categoriaid" required>
                         <option value="">Selecionar...</option>
-                        <option value="1">teste1</option>
-                        <option value="2">teste2</option>
+                        <?php foreach ($categoriasData as $categoria): ?>
+                        <option value="<?php echo $categoria['categoria_id'];?>"><?php echo $categoria['nome_categoria'];?></option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
             </div>

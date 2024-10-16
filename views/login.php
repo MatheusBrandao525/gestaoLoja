@@ -14,7 +14,7 @@
         <div class="centralizar">
             <div class="loginContainer">
                 <div class="logo-container">
-                    <img src="public/assets/img/logo/top_motos.png" alt="">
+                    <img src="public/assets/img/logo/logo_colt_bella.png" alt="">
                 </div>
                 <form action="autenticacao" method="post">
                     <div class="row">

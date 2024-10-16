@@ -2,13 +2,20 @@
 require_once "core/Conexao.php";
 require_once 'utils/Utilidades.php';
 require_once 'models/entities/Categoria.php';
+require_once 'models/entities/Subcategoria.php';
 require_once 'models/DAO/CategoriaDAO.php';
+require_once 'models/DAO/SubCategoriaDAO.php';
 
 class CategoriaController
 {
     public function telaCadastrarCategoria()
     {
         include ROOT_PATH . '/views/cadastroCategoria.php';
+    }
+
+    public function telaCadastrarSubCategoria()
+    {
+        include ROOT_PATH . '/views/cadastroSubCategoria.php';
     }
 
     public function telaEditarCategoria()
@@ -215,8 +222,8 @@ class CategoriaController
                             $valoresParaAtualizar[] = $valor;
                         }
                     }
-                    
-                                    
+
+
 
                     if (count($camposParaAtualizar) > 0) {
                         $sqlUpdate = "UPDATE categorias SET " . implode(', ', $camposParaAtualizar) . " WHERE categoria_id = ?";
@@ -224,9 +231,7 @@ class CategoriaController
                         $stmtUpdate = $conexao->prepare($sqlUpdate);
 
                         $stmtUpdate->execute($valoresParaAtualizar);
-
                     }
-                    
                 } else {
                     $sql = "INSERT INTO categorias (categoria_id, nome_categoria) VALUES (?, ?)";
                     $stmt = $conexao->prepare($sql);
@@ -234,7 +239,6 @@ class CategoriaController
                         $categoria['id'],
                         $categoria['nome']
                     ]);
-
                 }
             }
             echo "Categorias importadas com sucesso!";

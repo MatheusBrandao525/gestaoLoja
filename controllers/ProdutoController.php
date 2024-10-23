@@ -298,79 +298,127 @@ class ProdutoController
 
     public function importarProdutosJson()
     {
-        $conexao = Conexao::getInstance()->getConexao();
-        $utilidades = new Utilidades();
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fileUpload'])) {
-            if ($_FILES['fileUpload']['error'] != UPLOAD_ERR_OK) {
-                die("Erro no upload: " . $_FILES['fileUpload']['error']);
-            }
+        try {
+            $conexao = Conexao::getInstance()->getConexao();
+            $utilidades = new Utilidades();
     
-            $jsonFile = file_get_contents($_FILES['fileUpload']['tmp_name']);
-            $produtos = json_decode($jsonFile, true);
-    
-            if (!is_array($produtos)) {
-                die("Erro ao decodificar o JSON.");
-            }
-    
-            foreach ($produtos as $produto) {
-                $inicioPromocao = $utilidades->formatarDataParaMySQL($produto['inicio_promocao']);
-                $fimPromocao = $utilidades->formatarDataParaMySQL($produto['fim_promocao']);
-    
-                $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
-                $stmt->execute([$produto['id']]);
-                $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-                if ($produtoExistente) {
-                    $camposParaAtualizar = [];
-                    $valoresParaAtualizar = [];
-    
-                    foreach ($produto as $campo => $valor) {
-                        if ($campo === 'id') {
-                            continue;
-                        }
-                        if ($campo === 'inicio_promocao') {
-                            $valor = $inicioPromocao;
-                        }
-                        if ($campo === 'fim_promocao') {
-                            $valor = $fimPromocao;
-                        }
-                        if ($campo === 'id_grupo') {
-                            $campo = 'categoria_id';
-                        }
-                        if ($produtoExistente[$campo] != $valor) {
-                            $camposParaAtualizar[] = "$campo = ?";
-                            $valoresParaAtualizar[] = $valor;
-                        }
-                    }
-    
-                    if (count($camposParaAtualizar) > 0) {
-                        $sqlUpdate = "UPDATE produtos SET " . implode(', ', $camposParaAtualizar) . " WHERE codigo = ?";
-                        $valoresParaAtualizar[] = $produto['id'];
-                        $stmtUpdate = $conexao->prepare($sqlUpdate);
-                        $stmtUpdate->execute($valoresParaAtualizar);
-                    }
-                } else {
-                    $sql = "INSERT INTO produtos (codigo, nome, descricao, unidade, categoria_id, preco_venda_1, preco_venda_2, preco_venda_3, preco_venda_4, preco_venda_5, preco_promocao, inicio_promocao, fim_promocao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                    $stmt = $conexao->prepare($sql);
-                    $stmt->execute([
-                        $produto['id'],
-                        $produto['nome'],
-                        $produto['descricao'],
-                        $produto['unidade'],
-                        $produto['id_grupo'], // Aqui o id_grupo está sendo mapeado para categoria_id
-                        $produto['preco_venda_1'],
-                        $produto['preco_venda_2'],
-                        $produto['preco_venda_3'],
-                        $produto['preco_venda_4'],
-                        $produto['preco_venda_5'],
-                        $produto['preco_promocao'],
-                        $inicioPromocao,
-                        $fimPromocao
-                    ]);
+            // Verifica se é uma requisição POST e se o arquivo foi enviado
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['fileUpload'])) {
+                // Verifica se houve erro no upload do arquivo
+                if ($_FILES['fileUpload']['error'] != UPLOAD_ERR_OK) {
+                    throw new Exception("Erro no upload: " . $_FILES['fileUpload']['error']);
                 }
-            }
     
-            echo "Produtos importados com sucesso!";
+                // Lê o conteúdo do arquivo
+                $jsonFile = file_get_contents($_FILES['fileUpload']['tmp_name']);
+                // Converte o conteúdo para UTF-8
+                $jsonFile = mb_convert_encoding($jsonFile, 'UTF-8', 'auto');
+                // Decodifica o JSON
+                $produtos = json_decode($jsonFile, true);
+    
+                // Verifica se houve erro na decodificação do JSON
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new Exception("Erro ao decodificar o JSON: " . json_last_error_msg());
+                }
+    
+                // Verifica se o conteúdo decodificado é um array
+                if (!is_array($produtos)) {
+                    throw new Exception("Erro ao decodificar o JSON.");
+                }
+    
+                // Obtém o ID da categoria do formulário
+                $categoriaId = isset($_POST['grupoProduto']) ? $_POST['grupoProduto'] : null;
+                $subcategoriaId = isset($_POST['subgrupoProduto']) ? $_POST['subgrupoProduto'] : null;
+    
+                // Verifica se o ID da categoria foi enviado
+                if (!$categoriaId) {
+                    throw new Exception("O ID da categoria não está definido.");
+                }
+    
+                // Verifica se a categoria existe
+                $stmtCategoria = $conexao->prepare("SELECT categoria_id FROM categorias WHERE categoria_id = ?");
+                $stmtCategoria->execute([$categoriaId]);
+                if (!$stmtCategoria->fetch()) {
+                    throw new Exception("Categoria com ID $categoriaId não existe.");
+                }
+    
+                // Verifica se a subcategoria existe (opcional, caso subcategoria seja necessária)
+                if ($subcategoriaId) {
+                    $stmtSubcategoria = $conexao->prepare("SELECT subcategoria_id FROM subcategorias WHERE subcategoria_id = ?");
+                    $stmtSubcategoria->execute([$subcategoriaId]);
+                    if (!$stmtSubcategoria->fetch()) {
+                        throw new Exception("Subcategoria com ID $subcategoriaId não existe.");
+                    }
+                }
+    
+                // Itera sobre cada produto no array
+                foreach ($produtos as $produto) {
+                    // Formata datas de início e fim da promoção para o formato MySQL
+                    $inicioPromocao = $utilidades->formatarDataParaMySQL($produto['inicio_promocao']);
+                    $fimPromocao = $utilidades->formatarDataParaMySQL($produto['fim_promocao']);
+    
+                    // Verifica se o produto já existe no banco de dados
+                    $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
+                    $stmt->execute([$produto['id']]);
+                    $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+                    if ($produtoExistente) {
+                        // Atualiza o produto existente
+                        $camposParaAtualizar = [];
+                        $valoresParaAtualizar = [];
+    
+                        foreach ($produto as $campo => $valor) {
+                            if ($campo === 'id') continue; // Ignora o campo 'id'
+    
+                            // Substitui as datas de promoção pelos valores formatados
+                            if ($campo === 'inicio_promocao') $valor = $inicioPromocao;
+                            if ($campo === 'fim_promocao') $valor = $fimPromocao;
+    
+                            // Mapeia o campo 'id_grupo' para 'categoria_id'
+                            if ($campo === 'id_grupo') $campo = 'categoria_id';
+    
+                            // Verifica se o valor no banco é diferente do valor atual
+                            if ($produtoExistente[$campo] != $valor) {
+                                $camposParaAtualizar[] = "$campo = ?";
+                                $valoresParaAtualizar[] = $valor;
+                            }
+                        }
+    
+                        // Se houver campos a atualizar, executa a query de atualização
+                        if (count($camposParaAtualizar) > 0) {
+                            $sqlUpdate = "UPDATE produtos SET " . implode(', ', $camposParaAtualizar) . " WHERE codigo = ?";
+                            $valoresParaAtualizar[] = $produto['id'];
+                            $stmtUpdate = $conexao->prepare($sqlUpdate);
+                            $stmtUpdate->execute($valoresParaAtualizar);
+                        }
+                    } else {
+                        // Insere um novo produto no banco de dados
+                        $sql = "INSERT INTO produtos (codigo, nome, descricao, unidade, categoria_id, subcategoria_id, preco_venda_1, preco_venda_2, preco_venda_3, preco_venda_4, preco_venda_5, preco_promocao, inicio_promocao, fim_promocao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                        $stmt = $conexao->prepare($sql);
+                        $stmt->execute([
+                            $produto['id'],
+                            $produto['nome'],
+                            $produto['descricao'],
+                            $produto['unidade'],
+                            $categoriaId, // Usar o ID da categoria enviado pelo formulário
+                            $subcategoriaId,
+                            $produto['preco_venda_1'],
+                            $produto['preco_venda_2'],
+                            $produto['preco_venda_3'],
+                            $produto['preco_venda_4'],
+                            $produto['preco_venda_5'],
+                            $produto['preco_promocao'],
+                            $inicioPromocao,
+                            $fimPromocao
+                        ]);
+                    }
+                }
+    
+                echo "Produtos importados com sucesso!";
+            }
+        } catch (Exception $e) {
+            // Captura e exibe qualquer exceção durante a execução
+            echo "Erro ao importar produtos: " . $e->getMessage();
         }
     }
     

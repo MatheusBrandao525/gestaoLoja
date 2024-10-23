@@ -152,4 +152,79 @@ class CategoriaDAO
             return ['error' => "Erro ao contar categorias cadastradas: " . $e->getMessage()];
         }
     }
+
+    public function cadastrarSubcategoria($nomeSubcategoria, $categoriaPai, $nomeImagemSubcategoria)
+    {
+        $query = "INSERT INTO subcategorias (nome_subcategoria, categoria_id, imagem_subcategoria) 
+              VALUES (:nomeSubcategoria, :categoriaPai, :imagemSubcategoria)";
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(':nomeSubcategoria', $nomeSubcategoria);
+            $stmt->bindParam(':categoriaPai', $categoriaPai);
+            $stmt->bindParam(':imagemSubcategoria', $nomeImagemSubcategoria);
+            $stmt->execute();
+
+            return json_encode(['message' => 'Subcategoria cadastrada com sucesso!']);
+        } catch (PDOException $e) {
+            error_log('Erro ao cadastrar subcategoria: ' . $e->getMessage());
+            return json_encode(['error' => 'Erro ao cadastrar a subcategoria: ' . $e->getMessage()]);
+        }
+    }
+
+    public function buscarSubCategorias($categoriaPaiId)
+    {
+        $query = "SELECT * FROM subcategorias WHERE categoria_id = :categoriaPaiId";
+
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(":categoriaPaiId", $categoriaPaiId, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Registra o erro em um log, se necessário
+            error_log('Erro ao buscar subcategorias: ' . $e->getMessage());
+            throw new Exception('Erro ao buscar subcategorias: ' . $e->getMessage());
+        }
+    }
+
+    public function buscarSubCategoriasPorGrupoId($grupoId)
+{
+    // Exemplo de consulta SQL
+    $query = 'SELECT * FROM subcategorias WHERE categoria_id = :grupoId';
+    $stmt = $this->conexao->prepare($query);
+    $stmt->bindValue(':grupoId', $grupoId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+    public function excluirSubcategoriaDatabase($subcategoriaId)
+    {
+        try {
+            // Prepara a query SQL para excluir a subcategoria
+            $sql = "DELETE FROM subcategorias WHERE subcategoria_id = :subcategoria_id";
+    
+            // Prepara a conexão para execução da query
+            $stmt = $this->conexao->prepare($sql);
+    
+            // Vincula o parâmetro :subcategoria_id ao valor real
+            $stmt->bindParam(':subcategoria_id', $subcategoriaId, PDO::PARAM_INT);
+    
+            // Executa a query
+            if ($stmt->execute()) {
+                // Se a exclusão for bem-sucedida, retorna true
+                return true;
+            } else {
+                // Caso a exclusão falhe, retorna false
+                return false;
+            }
+    
+        } catch (PDOException $e) {
+            // Em caso de erro, captura a exceção e retorna false
+            error_log("Erro ao excluir subcategoria: " . $e->getMessage());
+            return false;
+        }
+    }
+    
 }

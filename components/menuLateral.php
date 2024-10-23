@@ -147,6 +147,7 @@ $dadosUsuarioLogado = $usuarioController->verificarClasseUsuarioPorId($_SESSION[
                     <div class="dropdown-content">
                         <a href="importarCategorias">Importar Categorias</a>
                         <a href="cadastroCategoria">Cadastrar Categoria</a>
+                        <a href="cadastroSubCategoria">Cadastrar Subcategoria</a>
                         <a href="categorias">Ver Categorias</a>
                     </div>
                 </li>

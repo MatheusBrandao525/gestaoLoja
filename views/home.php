@@ -22,7 +22,7 @@ $quantidadeDeClientesCadastrados = $clienteController->exibirQuantidadeDeCliente
     <div class="cardBox">
         <div class="card">
             <div>
-                <div class="numbers"><?php echo $quantidadeDeprodutosCadastrados; ?></div>
+            <div class="numbers"><?php if(isset($quantidadeDeprodutosCadastrados)){echo $quantidadeDeprodutosCadastrados;} else {echo 0;} ?></div>
                 <div class="cardName">Produtos Cadastrados</div>
             </div>
 

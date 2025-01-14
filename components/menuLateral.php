@@ -115,7 +115,7 @@ $sessaoExiste = $utilidades->verificaSeSessaoExiste();
                 <li>
                     <a href="#" class="link-logo-colt-bella">
                         <span class="icon">
-                            <img class="logo-colt-bella" src="public/assets/img/logo/logo_colt_bella.png"
+                            <img class="logo-colt-bella" src="public/assets/img/logo/logo_loja_brandao_makers.png"
                                 alt="Brand Logo">
                         </span>
                     </a>

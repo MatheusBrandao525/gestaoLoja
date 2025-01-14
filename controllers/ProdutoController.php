@@ -41,64 +41,39 @@ class ProdutoController
         return $produtosDAO->buscarTodosOsProdutosDatabase();
     }
 
-    public function cadastrarProduto()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-            $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING);
-            $exibePreco = filter_input(INPUT_POST, 'exibirPreco', FILTER_SANITIZE_STRING);
-            $precoCusto = filter_input(INPUT_POST, 'precoCusto', FILTER_SANITIZE_NUMBER_FLOAT);
-            $precoUnitario = filter_input(INPUT_POST, 'precoUnitario', FILTER_SANITIZE_NUMBER_FLOAT);
-            $modelos = filter_input(INPUT_POST, 'modelos', FILTER_SANITIZE_STRING);
-            $cor = filter_input(INPUT_POST, 'cor', FILTER_SANITIZE_STRING);
-            $destaque = filter_input(INPUT_POST, 'destaque', FILTER_SANITIZE_STRING);
-            $tamanhos = filter_input(INPUT_POST, 'tamanhos', FILTER_SANITIZE_STRING);
-            $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_STRING);
-            $categoriaId = filter_input(INPUT_POST, 'categoriaid', FILTER_SANITIZE_STRING);
+public function cadastrarProduto()
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+        $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING);
+        $exibePreco = filter_input(INPUT_POST, 'exibirPreco', FILTER_VALIDATE_BOOLEAN);
+        $precoCusto = filter_input(INPUT_POST, 'precoCusto', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $precoUnitario = filter_input(INPUT_POST, 'precoUnitario', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+        $modelos = filter_input(INPUT_POST, 'modelos', FILTER_SANITIZE_STRING);
+        $cor = filter_input(INPUT_POST, 'cor', FILTER_SANITIZE_STRING);
+        $destaque = filter_input(INPUT_POST, 'destaque', FILTER_VALIDATE_BOOLEAN);
+        $tamanhos = filter_input(INPUT_POST, 'tamanhos', FILTER_SANITIZE_STRING); // Expects a comma-separated list
+        $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_STRING);
+        $categoriaId = filter_input(INPUT_POST, 'categoriaid', FILTER_SANITIZE_NUMBER_INT);
 
-            $validarSeCamposEstaoVazios = new Utilidades();
+        $tamanhosArray = explode(',', $tamanhos);
 
-            $validarSeCamposEstaoVazios->validarCampoVazio($nome, "Nome");
-            $validarSeCamposEstaoVazios->validarCampoVazio($codigo, "Código");
-            $validarSeCamposEstaoVazios->validarCampoVazio($exibePreco, "Exibir Preço");
-            $validarSeCamposEstaoVazios->validarCampoVazio($precoCusto, "Preço de Custo");
-            $validarSeCamposEstaoVazios->validarCampoVazio($precoUnitario, "Preço Unitário");
-            $validarSeCamposEstaoVazios->validarCampoVazio($modelos, "Modelos");
-            $validarSeCamposEstaoVazios->validarCampoVazio($cor, "Cor");
-            $validarSeCamposEstaoVazios->validarCampoVazio($destaque, "Destaque");
-            $validarSeCamposEstaoVazios->validarCampoVazio($tamanhos, "Tamanhos");
-            $validarSeCamposEstaoVazios->validarCampoVazio($descricao, "Descrição");
-            $validarSeCamposEstaoVazios->validarCampoVazio($categoriaId, "Categoria ID");
+        $diretorioDestino = "public/assets/img/produtos/";
+        $imagensNomes = [];
 
-            $diretorioDestino = "public/assets/img/produtos/";
-            $imagensNomes = [null, null, null];
-    
-            if (isset($_FILES['imagem1']) && $_FILES['imagem1']['error'] === UPLOAD_ERR_OK) {
-                $imagensNomes[0] = $this->processarImagem($_FILES['imagem1'], $diretorioDestino);
-                $imagensNomes[0] = PAINEL_URL_BASE . '/' . $diretorioDestino . $imagensNomes[0];
-            } elseif ($_FILES['imagem1']['error'] !== UPLOAD_ERR_NO_FILE) {
-                throw new Exception("Erro ao carregar a imagem imagem1: " . $_FILES['imagem1']['error']);
+        for ($i = 1; $i <= 3; $i++) {
+            if (isset($_FILES["imagem$i"]) && $_FILES["imagem$i"]['error'] === UPLOAD_ERR_OK) {
+                $imagensNomes[] = $this->processarImagem($_FILES["imagem$i"], $diretorioDestino);
             }
+        }
 
-            if (isset($_FILES['imagem2']) && $_FILES['imagem2']['error'] === UPLOAD_ERR_OK) {
-                $imagensNomes[1] = $this->processarImagem($_FILES['imagem2'], $diretorioDestino);
-                $imagensNomes[1] = PAINEL_URL_BASE . '/' . $diretorioDestino . $imagensNomes[1];
-            } elseif ($_FILES['imagem2']['error'] !== UPLOAD_ERR_NO_FILE) {
-                throw new Exception("Erro ao carregar a imagem imagem2: " . $_FILES['imagem2']['error']);
-            }
+        $conexao = Conexao::getInstance()->getConexao();
+        $produtoDao = new ProdutoDao($conexao);
 
+        $conexao->beginTransaction();
 
-            if (isset($_FILES['imagem3']) && $_FILES['imagem3']['error'] === UPLOAD_ERR_OK) {
-                $imagensNomes[2] = $this->processarImagem($_FILES['imagem3'], $diretorioDestino);
-                $imagensNomes[2] = PAINEL_URL_BASE . '/' . $diretorioDestino . $imagensNomes[2];
-            } elseif ($_FILES['imagem3']['error'] !== UPLOAD_ERR_NO_FILE) {
-                throw new Exception("Erro ao carregar a imagem imagem3: " . $_FILES['imagem3']['error']);
-            }
-
-            $conexao = Conexao::getInstance()->getConexao();
-            $produtoDao = new ProdutoDao($conexao);
-
-            $produto = new Produto(
+        try {
+            $produtoId = $produtoDao->cadastro(
                 $nome,
                 $codigo,
                 $exibePreco,
@@ -107,18 +82,29 @@ class ProdutoController
                 $modelos,
                 $cor,
                 $destaque,
-                $tamanhos,
                 $descricao,
-                $imagensNomes[0] ?? null,
-                $imagensNomes[1] ?? null,
-                $imagensNomes[2] ?? null,
                 $categoriaId
             );
-            $produtoDao->cadastro($produto);
-        } else {
-            throw new Exception("Invalid request method.");
+
+            foreach ($tamanhosArray as $tamanho) {
+                $produtoDao->inserirTamanho($produtoId, trim($tamanho));
+            }
+
+            foreach ($imagensNomes as $imagem) {
+                $produtoDao->inserirImagem($produtoId, $imagem);
+            }
+
+            $conexao->commit();
+            echo json_encode(['message' => 'Produto cadastrado com sucesso!']);
+        } catch (Exception $e) {
+            $conexao->rollBack();
+            echo json_encode(['message' => "Erro ao cadastrar o produto: " . $e->getMessage()]);
         }
+    } else {
+        throw new Exception("Invalid request method.");
     }
+}
+
 
     public function mostraDadosProduto()
     {

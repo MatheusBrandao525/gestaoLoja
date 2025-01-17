@@ -41,69 +41,72 @@ class ProdutoController
         return $produtosDAO->buscarTodosOsProdutosDatabase();
     }
 
-public function cadastrarProduto()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
-        $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING);
-        $exibePreco = filter_input(INPUT_POST, 'exibirPreco', FILTER_VALIDATE_BOOLEAN);
-        $precoCusto = filter_input(INPUT_POST, 'precoCusto', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        $precoUnitario = filter_input(INPUT_POST, 'precoUnitario', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-        $modelos = filter_input(INPUT_POST, 'modelos', FILTER_SANITIZE_STRING);
-        $cor = filter_input(INPUT_POST, 'cor', FILTER_SANITIZE_STRING);
-        $destaque = filter_input(INPUT_POST, 'destaque', FILTER_VALIDATE_BOOLEAN);
-        $tamanhos = filter_input(INPUT_POST, 'tamanhos', FILTER_SANITIZE_STRING); // Expects a comma-separated list
-        $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_STRING);
-        $categoriaId = filter_input(INPUT_POST, 'categoriaid', FILTER_SANITIZE_NUMBER_INT);
+    public function cadastrarProduto()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+            $codigo = filter_input(INPUT_POST, 'codigo', FILTER_SANITIZE_STRING);
+            $exibePreco = filter_input(INPUT_POST, 'exibirPreco', FILTER_VALIDATE_BOOLEAN);
+            $precoCusto = filter_input(INPUT_POST, 'precoCusto', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $precoUnitario = filter_input(INPUT_POST, 'precoUnitario', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+            $modelos = filter_input(INPUT_POST, 'modelos', FILTER_SANITIZE_STRING);
+            $cor = filter_input(INPUT_POST, 'cor', FILTER_SANITIZE_STRING);
+            $destaque = filter_input(INPUT_POST, 'destaque', FILTER_VALIDATE_BOOLEAN);
+            $tamanhos = filter_input(INPUT_POST, 'tamanhos', FILTER_SANITIZE_STRING); // Expects a comma-separated list
+            $descricao = filter_input(INPUT_POST, 'descricao', FILTER_SANITIZE_STRING);
+            $categoriaId = filter_input(INPUT_POST, 'categoriaid', FILTER_SANITIZE_NUMBER_INT);
 
-        $tamanhosArray = explode(',', $tamanhos);
+            $tamanhosArray = explode(',', $tamanhos);
 
-        $diretorioDestino = "public/assets/img/produtos/";
-        $imagensNomes = [];
+            $diretorioDestino = "public/assets/img/produtos/";
+            $urlBase = PAINEL_URL_BASE . '/' . $diretorioDestino; // Base URL para as imagens
+            $imagensNomes = [];
 
-        for ($i = 1; $i <= 3; $i++) {
-            if (isset($_FILES["imagem$i"]) && $_FILES["imagem$i"]['error'] === UPLOAD_ERR_OK) {
-                $imagensNomes[] = $this->processarImagem($_FILES["imagem$i"], $diretorioDestino);
+            for ($i = 1; $i <= 3; $i++) {
+                if (isset($_FILES["imagem$i"]) && $_FILES["imagem$i"]['error'] === UPLOAD_ERR_OK) {
+                    $nomeImagem = $this->processarImagem($_FILES["imagem$i"], $diretorioDestino);
+                    $imagensNomes[] = $urlBase . $nomeImagem; // Salva a URL completa
+                }
             }
+
+            $conexao = Conexao::getInstance()->getConexao();
+            $produtoDao = new ProdutoDao($conexao);
+
+            $conexao->beginTransaction();
+
+            try {
+                $produtoId = $produtoDao->cadastro(
+                    $nome,
+                    $codigo,
+                    $exibePreco,
+                    $precoCusto,
+                    $precoUnitario,
+                    $modelos,
+                    $cor,
+                    $destaque,
+                    $descricao,
+                    $categoriaId
+                );
+
+                foreach ($tamanhosArray as $tamanho) {
+                    $produtoDao->inserirTamanho($produtoId, trim($tamanho));
+                }
+
+                foreach ($imagensNomes as $imagem) {
+                    $produtoDao->inserirImagem($produtoId, $imagem);
+                }
+
+                $conexao->commit();
+                echo json_encode(['message' => 'Produto cadastrado com sucesso!']);
+            } catch (Exception $e) {
+                $conexao->rollBack();
+                echo json_encode(['message' => "Erro ao cadastrar o produto: " . $e->getMessage()]);
+            }
+        } else {
+            throw new Exception("Invalid request method.");
         }
-
-        $conexao = Conexao::getInstance()->getConexao();
-        $produtoDao = new ProdutoDao($conexao);
-
-        $conexao->beginTransaction();
-
-        try {
-            $produtoId = $produtoDao->cadastro(
-                $nome,
-                $codigo,
-                $exibePreco,
-                $precoCusto,
-                $precoUnitario,
-                $modelos,
-                $cor,
-                $destaque,
-                $descricao,
-                $categoriaId
-            );
-
-            foreach ($tamanhosArray as $tamanho) {
-                $produtoDao->inserirTamanho($produtoId, trim($tamanho));
-            }
-
-            foreach ($imagensNomes as $imagem) {
-                $produtoDao->inserirImagem($produtoId, $imagem);
-            }
-
-            $conexao->commit();
-            echo json_encode(['message' => 'Produto cadastrado com sucesso!']);
-        } catch (Exception $e) {
-            $conexao->rollBack();
-            echo json_encode(['message' => "Erro ao cadastrar o produto: " . $e->getMessage()]);
-        }
-    } else {
-        throw new Exception("Invalid request method.");
     }
-}
+
 
 
     public function mostraDadosProduto()
@@ -290,26 +293,26 @@ public function cadastrarProduto()
             if ($_FILES['fileUpload']['error'] != UPLOAD_ERR_OK) {
                 die("Erro no upload: " . $_FILES['fileUpload']['error']);
             }
-    
+
             $jsonFile = file_get_contents($_FILES['fileUpload']['tmp_name']);
             $produtos = json_decode($jsonFile, true);
-    
+
             if (!is_array($produtos)) {
                 die("Erro ao decodificar o JSON.");
             }
-    
+
             foreach ($produtos as $produto) {
                 $inicioPromocao = $utilidades->formatarDataParaMySQL($produto['inicio_promocao']);
                 $fimPromocao = $utilidades->formatarDataParaMySQL($produto['fim_promocao']);
-    
+
                 $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
                 $stmt->execute([$produto['id']]);
                 $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
                 if ($produtoExistente) {
                     $camposParaAtualizar = [];
                     $valoresParaAtualizar = [];
-    
+
                     foreach ($produto as $campo => $valor) {
                         if ($campo === 'id') {
                             continue;
@@ -328,7 +331,7 @@ public function cadastrarProduto()
                             $valoresParaAtualizar[] = $valor;
                         }
                     }
-    
+
                     if (count($camposParaAtualizar) > 0) {
                         $sqlUpdate = "UPDATE produtos SET " . implode(', ', $camposParaAtualizar) . " WHERE codigo = ?";
                         $valoresParaAtualizar[] = $produto['id'];
@@ -355,64 +358,64 @@ public function cadastrarProduto()
                     ]);
                 }
             }
-    
+
             echo "Produtos importados com sucesso!";
         }
     }
-    
+
 
     public function processarImagensImportadas()
     {
         $conexao = Conexao::getInstance()->getConexao();
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['imageUpload'])) {
             $fileCount = count($_FILES['imageUpload']['name']);
-    
+
             for ($i = 0; $i < $fileCount; $i++) {
                 if ($_FILES['imageUpload']['error'][$i] !== UPLOAD_ERR_OK) {
                     echo "Erro no upload do arquivo " . $_FILES['imageUpload']['name'][$i] . ": " . $_FILES['imageUpload']['error'][$i];
                     continue;
                 }
-    
+
                 $jsonFile = file_get_contents($_FILES['imageUpload']['tmp_name'][$i]);
                 $imagensProdutos = json_decode($jsonFile, true);
-    
+
                 if (!is_array($imagensProdutos)) {
                     echo "Erro ao decodificar o JSON.";
                     exit();
                 }
-    
+
                 foreach ($imagensProdutos as $imagemProduto) {
                     $produtoId = $imagemProduto['id_produto'];
                     $extensao = $imagemProduto['extensao'];
                     $imagemBase64 = $imagemProduto['foto'];
-    
+
                     $stmt = $conexao->prepare("SELECT * FROM produtos WHERE codigo = ?");
                     $stmt->execute([$produtoId]);
                     $produtoExistente = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
                     if ($produtoExistente) {
                         $imagemBinaria = base64_decode($imagemBase64);
                         if ($imagemBinaria === false) {
                             echo "Erro ao decodificar imagem em base64 para o produto ID: $produtoId\n";
                             continue;
                         }
-    
+
                         $nomeUnicoImagem = md5($imagemBase64 . microtime()) . $extensao;
-    
+
                         $caminhoSalvar = "public/assets/img/produtos/$nomeUnicoImagem";
-    
+
                         if (!file_put_contents($caminhoSalvar, $imagemBinaria)) {
                             echo "Erro ao salvar a imagem para o produto ID: $produtoId\n";
                             continue;
                         }
-    
+
                         $urlCompletaImagem = PAINEL_URL_BASE . '/' . $caminhoSalvar;
-    
+
                         $sqlConsulta = "SELECT imagem1, imagem2, imagem3 FROM produtos WHERE codigo = ?";
                         $stmtConsulta = $conexao->prepare($sqlConsulta);
                         $stmtConsulta->execute([$produtoId]);
                         $resultado = $stmtConsulta->fetch();
-    
+
                         if ($resultado) {
                             $campoAtualizar = null;
                             if (empty($resultado['imagem1'])) {
@@ -422,7 +425,7 @@ public function cadastrarProduto()
                             } elseif (empty($resultado['imagem3'])) {
                                 $campoAtualizar = 'imagem3';
                             }
-    
+
                             if ($campoAtualizar) {
                                 $sqlUpdate = "UPDATE produtos SET $campoAtualizar = ? WHERE codigo = ?";
                                 $stmtUpdate = $conexao->prepare($sqlUpdate);
@@ -440,7 +443,7 @@ public function cadastrarProduto()
             }
         }
     }
-    
+
 
     public function pesquisaProdutos()
     {

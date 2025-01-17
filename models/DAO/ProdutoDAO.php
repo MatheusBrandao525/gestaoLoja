@@ -39,44 +39,55 @@ class ProdutoDao
 
     public function cadastro($nome, $codigo, $exibePreco, $precoCusto, $precoUnitario, $modelos, $cor, $destaque, $descricao, $categoriaId)
     {
-        $query = "INSERT INTO produtos (nome, codigo, exibe_preco, preco_custo, preco_unitario, modelos, cor, destaque, descricao, categoria_id)
+        $query = "INSERT INTO produtos (nome, codigo, exibe_preco, preco_custo, preco_unitario, modelos, cor, destaque, descricao, categoria_id) 
                   VALUES (:nome, :codigo, :exibePreco, :precoCusto, :precoUnitario, :modelos, :cor, :destaque, :descricao, :categoriaId)";
-        $stmt = $this->conexao->prepare($query);
-    
-        $stmt->bindParam(':nome', $nome);
-        $stmt->bindParam(':codigo', $codigo);
-        $stmt->bindParam(':exibePreco', $exibePreco);
-        $stmt->bindParam(':precoCusto', $precoCusto);
-        $stmt->bindParam(':precoUnitario', $precoUnitario);
-        $stmt->bindParam(':modelos', $modelos);
-        $stmt->bindParam(':cor', $cor);
-        $stmt->bindParam(':destaque', $destaque);
-        $stmt->bindParam(':descricao', $descricao);
-        $stmt->bindParam(':categoriaId', $categoriaId);
-    
-        $stmt->execute();
-    
-        return $this->conexao->lastInsertId();
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(':nome', $nome);
+            $stmt->bindParam(':codigo', $codigo);
+            $stmt->bindParam(':exibePreco', $exibePreco);
+            $stmt->bindParam(':precoCusto', $precoCusto);
+            $stmt->bindParam(':precoUnitario', $precoUnitario);
+            $stmt->bindParam(':modelos', $modelos);
+            $stmt->bindParam(':cor', $cor);
+            $stmt->bindParam(':destaque', $destaque);
+            $stmt->bindParam(':descricao', $descricao);
+            $stmt->bindParam(':categoriaId', $categoriaId);
+            $stmt->execute();
+
+            return $this->conexao->lastInsertId(); // Retorna o ID do produto cadastrado
+        } catch (Exception $e) {
+            throw new Exception("Erro ao cadastrar o produto: " . $e->getMessage());
+        }
     }
-    
+
     public function inserirTamanho($produtoId, $tamanho)
     {
         $query = "INSERT INTO produtos_tamanhos (produto_id, tamanho) VALUES (:produtoId, :tamanho)";
-        $stmt = $this->conexao->prepare($query);
-        $stmt->bindParam(':produtoId', $produtoId);
-        $stmt->bindParam(':tamanho', $tamanho);
-        $stmt->execute();
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(':produtoId', $produtoId);
+            $stmt->bindParam(':tamanho', $tamanho);
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Erro ao inserir tamanho: " . $e->getMessage());
+        }
     }
-    
+
     public function inserirImagem($produtoId, $imagem)
     {
-        $query = "INSERT INTO produtos_imagens (produto_id, imagem_url) VALUES (:produtoId, :caminho)";
-        $stmt = $this->conexao->prepare($query);
-        $stmt->bindParam(':produtoId', $produtoId);
-        $stmt->bindParam(':caminho', $imagem);
-        $stmt->execute();
+        $query = "INSERT INTO produtos_imagens (produto_id, imagem_url) VALUES (:produtoId, :imagem)";
+        try {
+            $stmt = $this->conexao->prepare($query);
+            $stmt->bindParam(':produtoId', $produtoId);
+            $stmt->bindParam(':imagem', $imagem);
+            $stmt->execute();
+        } catch (Exception $e) {
+            throw new Exception("Erro ao inserir imagem: " . $e->getMessage());
+        }
     }
-    
+
+
 
     public function excluirProdutoDatabase($produtoId)
     {
@@ -163,24 +174,24 @@ class ProdutoDao
     {
         try {
             $this->conexao->beginTransaction();
-    
+
             $nomeArquivoImagem = basename($urlImagem);
-    
+
             $caminhoRelativoImagem = str_replace(PAINEL_URL_BASE . '/', '', $urlImagem);
-    
+
             $sqlUpdate = "UPDATE produtos SET imagem1 = NULL WHERE produto_id = :produtoId AND imagem1 = :urlImagem";
             $stmtUpdate = $this->conexao->prepare($sqlUpdate);
             $stmtUpdate->bindParam(':produtoId', $produtoId, PDO::PARAM_INT);
             $stmtUpdate->bindParam(':urlImagem', $urlImagem, PDO::PARAM_STR);
             $stmtUpdate->execute();
-    
+
             $caminhoImagem = "public/assets/img/produtos/{$caminhoRelativoImagem}";
             if (file_exists($caminhoImagem)) {
                 unlink($caminhoImagem);
             }
-    
+
             $this->conexao->commit();
-    
+
             return true;
         } catch (Exception $e) {
             $this->conexao->rollBack();
@@ -188,7 +199,7 @@ class ProdutoDao
             return false;
         }
     }
-    
+
 
     public function buscarProdutosPorCategoriaDatabase($categoriaId)
     {

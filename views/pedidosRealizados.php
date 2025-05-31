@@ -5,6 +5,7 @@ require_once 'components/menuLateral.php';
 .container-pedidos-realizados {
     width: 98%;
     margin: 0 auto;
+    height: 650px;
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
@@ -73,13 +74,15 @@ require_once 'components/menuLateral.php';
 }
 
 .search {
+    width: 98%;
     text-align: right;
     margin-bottom: 10px;
 }
 
 .search input {
+    height: 3rem;
     padding: 5px;
-    width: 200px;
+    width: 100%;
     border: 1px solid #ccc;
     border-radius: 3px;
 }
@@ -92,7 +95,8 @@ table {
 
 table th,
 table td {
-    padding: 10px;
+    min-width: 60px;
+    padding: 10px 0 0 10px;
     border: 1px solid #ddd;
     text-align: left;
 }
@@ -107,6 +111,13 @@ table tbody tr:nth-child(even) {
 
 table tbody tr:hover {
     background-color: #f1f1f1;
+}
+
+.opcoes-pedido{
+    display: flex;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
 }
 
 .status {
@@ -206,7 +217,7 @@ table tbody tr:hover {
 }
 
 .btn {
-    padding: 10px 20px;
+    padding: 8px 10px;
     margin: 5px;
     cursor: pointer;
 }
@@ -219,28 +230,22 @@ table tbody tr:hover {
 
 @media print {
 
-    /* Esconder elementos que não devem aparecer na impressão */
     .modal-header .close,
     .modal-footer {
         display: none;
     }
 
-    /* Ajustar margens e padding para impressão */
     body {
         margin: 0;
         padding: 10mm;
     }
 
-    /* Estilizar o texto e conteúdo principal para impressão */
     .modal-content {
         border: none;
         box-shadow: none;
         width: 100%;
-        /* Garantir que a largura seja 100% */
         margin: 0;
-        /* Remover margens */
         padding: 0;
-        /* Remover padding */
     }
 
     table {
@@ -286,9 +291,8 @@ table tbody tr:hover {
                         <th>ID</th>
                         <th>Cliente</th>
                         <th>Forma de Pagamento</th>
-                        <th>Preço</th>
-                        <th>Quantidade</th>
-                        <th>Preço Total</th>
+                        <th>Itens</th>
+                        <th>Valor Total</th>
                         <th>Data</th>
                         <th>Status</th>
                         <th>Opções</th>
@@ -299,12 +303,11 @@ table tbody tr:hover {
                         <td>1</td>
                         <td>João Silva</td>
                         <td>Cartão</td>
-                        <td>R$ 50,00</td>
                         <td>2</td>
                         <td>R$ 100,00</td>
                         <td>22-05-2024</td>
                         <td><span class="status approved">Aprovado</span></td>
-                        <td>
+                        <td class="opcoes-pedido">
                             <button class="btn btn-detail" onclick="openModal()">Detalhes</button>
                             <button class="btn btn-edit">Editar</button>
                             <button class="btn btn-delete">Excluir</button>
@@ -315,12 +318,86 @@ table tbody tr:hover {
                         <td>2</td>
                         <td>Maria Oliveira</td>
                         <td>PIX</td>
-                        <td>R$ 1,50</td>
                         <td>10</td>
                         <td>R$ 15,00</td>
                         <td>21-05-2024</td>
                         <td><span class="status pending">Pendente</span></td>
-                        <td>
+                        <td class="opcoes-pedido">
+                            <button class="btn btn-detail" onclick="openModal()">Detalhes</button>
+                            <button class="btn btn-edit">Editar</button>
+                            <button class="btn btn-delete">Excluir</button>
+                            <button class="btn btn-despachar">Despachar Entrega</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Maria Oliveira</td>
+                        <td>PIX</td>
+                        <td>10</td>
+                        <td>R$ 15,00</td>
+                        <td>21-05-2024</td>
+                        <td><span class="status pending">Pendente</span></td>
+                        <td class="opcoes-pedido">
+                            <button class="btn btn-detail" onclick="openModal()">Detalhes</button>
+                            <button class="btn btn-edit">Editar</button>
+                            <button class="btn btn-delete">Excluir</button>
+                            <button class="btn btn-despachar">Despachar Entrega</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Maria Oliveira</td>
+                        <td>PIX</td>
+                        <td>10</td>
+                        <td>R$ 15,00</td>
+                        <td>21-05-2024</td>
+                        <td><span class="status pending">Pendente</span></td>
+                        <td class="opcoes-pedido">
+                            <button class="btn btn-detail" onclick="openModal()">Detalhes</button>
+                            <button class="btn btn-edit">Editar</button>
+                            <button class="btn btn-delete">Excluir</button>
+                            <button class="btn btn-despachar">Despachar Entrega</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Maria Oliveira</td>
+                        <td>PIX</td>
+                        <td>10</td>
+                        <td>R$ 15,00</td>
+                        <td>21-05-2024</td>
+                        <td><span class="status pending">Pendente</span></td>
+                        <td class="opcoes-pedido">
+                            <button class="btn btn-detail" onclick="openModal()">Detalhes</button>
+                            <button class="btn btn-edit">Editar</button>
+                            <button class="btn btn-delete">Excluir</button>
+                            <button class="btn btn-despachar">Despachar Entrega</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Maria Oliveira</td>
+                        <td>PIX</td>
+                        <td>10</td>
+                        <td>R$ 15,00</td>
+                        <td>21-05-2024</td>
+                        <td><span class="status pending">Pendente</span></td>
+                        <td class="opcoes-pedido">
+                            <button class="btn btn-detail" onclick="openModal()">Detalhes</button>
+                            <button class="btn btn-edit">Editar</button>
+                            <button class="btn btn-delete">Excluir</button>
+                            <button class="btn btn-despachar">Despachar Entrega</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Maria Oliveira</td>
+                        <td>PIX</td>
+                        <td>10</td>
+                        <td>R$ 15,00</td>
+                        <td>21-05-2024</td>
+                        <td><span class="status pending">Pendente</span></td>
+                        <td class="opcoes-pedido">
                             <button class="btn btn-detail" onclick="openModal()">Detalhes</button>
                             <button class="btn btn-edit">Editar</button>
                             <button class="btn btn-delete">Excluir</button>
@@ -380,6 +457,49 @@ table tbody tr:hover {
                                 <td>R$ 1,50</td>
                                 <td>R$ 15,00</td>
                             </tr>
+                                                        <tr>
+                                <td>Caneta Bic</td>
+                                <td>10</td>
+                                <td>R$ 1,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                                                        <tr>
+                                <td>Caneta Bic</td>
+                                <td>10</td>
+                                <td>R$ 1,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                                                        <tr>
+                                <td>Caneta Bic</td>
+                                <td>10</td>
+                                <td>R$ 1,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                                                        <tr>
+                                <td>Caneta Bic</td>
+                                <td>10</td>
+                                <td>R$ 1,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                                                        <tr>
+                                <td>Caneta Bic</td>
+                                <td>10</td>
+                                <td>R$ 1,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                                                        <tr>
+                                <td>Caneta Bic</td>
+                                <td>10</td>
+                                <td>R$ 1,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                                                        <tr>
+                                <td>Caneta Bic</td>
+                                <td>10</td>
+                                <td>R$ 1,50</td>
+                                <td>R$ 15,00</td>
+                            </tr>
+                            
                         </tbody>
                     </table>
                     <div class="signature-section">
